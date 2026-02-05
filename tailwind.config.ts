@@ -10,6 +10,7 @@ const config: Config = {
         card: '#121212',
         accent: '#022D92',
         muted: '#727272',
+        'row-hover': 'hsl(256.6deg 51.65% 17.84%)',
       },
       borderRadius: {
         default: '8px',
