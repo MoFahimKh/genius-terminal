@@ -1,5 +1,3 @@
-'use client';
-
 const TABS = [
   { id: 'trade', label: 'Trade' },
   { id: 'orderBook', label: 'Order Book' },

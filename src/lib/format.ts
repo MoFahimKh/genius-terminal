@@ -1,9 +1,3 @@
-const USD_FORMATTER = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 4,
-});
 
 const TOKEN_FORMATTER = new Intl.NumberFormat("en-US", {
   minimumFractionDigits: 0,

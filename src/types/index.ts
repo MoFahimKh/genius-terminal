@@ -97,6 +97,7 @@ export type Metric = {
   primaryTone: string;
   secondaryTone?: string;
   lineColor?: string;
+  tooltip?:string;
 };
 
 export type SubscriptionVariant = 'evm' | 'sol';
@@ -141,4 +142,34 @@ export type SubscriptionDescriptor<TData, TVariables> = {
   subscribe: (sdk: Codex, variables: TVariables, sink: CodexSink<TData>) => Promise<RawUnsubscribe> | RawUnsubscribe;
   select: (data?: TData | null) => Array<Record<string, unknown> | null>;
   toVariables: (variables: SubscriptionVariables) => TVariables;
+};
+
+export type SubscribeToTokenEventsOptions = {
+  sdk: Codex;
+  address: string;
+  networkId: number;
+  variant: SubscriptionVariant;
+  onEvents: (events: GraphqlTokenEvent[]) => void;
+  onError?: (message: string) => void;
+};
+
+export type AmountFields = {
+  amount0?: string | number | null;
+  amount0Shifted?: string | number | null;
+  amount1?: string | number | null;
+  amount1Shifted?: string | number | null;
+};
+
+export type SwapEventFields = AmountFields & {
+  amount0In?: string | number | null;
+  amount0Out?: string | number | null;
+  amount1In?: string | number | null;
+  amount1Out?: string | number | null;
+  amountNonLiquidityToken?: string | number | null;
+  amountNonLiquidityTokenShifted?: string | number | null;
+  amountBaseToken?: string | number | null;
+  priceBaseToken?: string | number | null;
+  priceBaseTokenTotal?: string | number | null;
+  priceUsd?: string | number | null;
+  priceUsdTotal?: string | number | null;
 };

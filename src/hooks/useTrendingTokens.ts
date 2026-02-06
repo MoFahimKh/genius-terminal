@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import {
   RankingDirection,
   TokenRankingAttribute,
-  type FilterTokensQuery,
 } from "@codex-data/sdk";
 
 import { getCodexClient } from "@/lib/codex/client";

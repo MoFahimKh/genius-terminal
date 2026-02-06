@@ -5,13 +5,13 @@ import { motion } from "framer-motion";
 
 import { TrendingTokensStrip } from "@/components/common/TrendingTokensStrip";
 import { DragHandle } from "@/components/common/DragHandle";
-import { PanelCollapseToggle } from "@/components/common/PanelCollapseToggle";
 import { RightSidebar } from "@/components/sidebar/RightSidebar";
 import { TokenStats } from "@/components/stats/TokenStats";
 import { TableSection } from "@/components/tables/TableSection";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useVerticalSplit } from "@/hooks/useVerticalSplit";
 import { TokenEventsProvider } from "@/context/TokenEventsContext";
+import { CollapseToggle } from "./common/CollapseToggle";
 
 const SIDEBAR_WIDTH = 365;
 
@@ -75,7 +75,7 @@ export const TerminalView = ({ address, networkId }: TerminalViewProps) => {
             {isMobile && (
               <div className="border-t border-white/10 pb-4 pt-3">
                 <div className="flex justify-center">
-                  <PanelCollapseToggle
+                  <CollapseToggle.vertical
                     isCollapsed={isSidebarCollapsed}
                     onClick={toggleSidebar}
                   />
@@ -112,9 +112,9 @@ export const TerminalView = ({ address, networkId }: TerminalViewProps) => {
       {!isMobile && (
         <div
           className="absolute top-1/2 hidden -translate-y-1/2 md:block"
-          style={{ right: isSidebarCollapsed ? 16 : SIDEBAR_WIDTH - 28 }}
+          style={{ right: isSidebarCollapsed ? 16 : SIDEBAR_WIDTH - 14 }}
         >
-          <PanelCollapseToggle
+          <CollapseToggle.horizontal
             isCollapsed={isSidebarCollapsed}
             onClick={toggleSidebar}
           />

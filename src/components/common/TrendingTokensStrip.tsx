@@ -153,7 +153,7 @@ export const TrendingTokensStrip = () => {
           )}
         </div>
       </div>
-      <CollapseToggle
+      <CollapseToggle.vertical
           isCollapsed={collapsed}
           onClick={() => setCollapsed((p) => !p)}
         />

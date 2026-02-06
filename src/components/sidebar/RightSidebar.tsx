@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState, type ReactNode } from 'react';
 import Image from 'next/image';
@@ -12,10 +12,45 @@ import { useTokenStats } from '@/hooks/useTokenStats';
 import { formatCount, formatUsd } from '@/lib/format';
 
 const WELCOME_IMAGE = {
-  src: '/assets/images/welcome.png',
+  src: "/assets/images/welcome.png",
   width: 688,
   height: 692,
 };
+
+const METRICS: Metric[] = [
+  {
+    label: "24H VOLUME",
+    primary: "$785.1K",
+    primaryTone: "#F8F4FF",
+    lineColor: "#4CE0FF",
+    tooltip: "$785.18K",
+  },
+  {
+    label: "BUYS",
+    primary: "1.2K",
+    secondary: "$380.5K",
+    primaryTone: "#34F5C6",
+    secondaryTone: "#34F5C6",
+    lineColor: "#2CCF9D",
+    tooltip: "$380.55K",
+  },
+  {
+    label: "SELLS",
+    primary: "1.1K",
+    secondary: "$404.6K",
+    primaryTone: "#FF7A8A",
+    secondaryTone: "#FF7A8A",
+    lineColor: "#FF5E73",
+    tooltip: "$404.62K",
+  },
+  {
+    label: "VOL. CHANGE",
+    primary: "+47421.0%",
+    primaryTone: "#66FF9B",
+    lineColor: "#47D97C",
+    tooltip: "+47421.00%",
+  },
+];
 
 type AuthButton = {
   label: string;
@@ -24,7 +59,7 @@ type AuthButton = {
 
 const BUTTONS: AuthButton[] = [
   {
-    label: 'Continue with Google',
+    label: "Continue with Google",
     icon: (
       <span className="flex h-7 w-7 items-center justify-center rounded-md text-base font-black text-[#1D0035]">
         G
@@ -32,17 +67,17 @@ const BUTTONS: AuthButton[] = [
     ),
   },
   {
-    label: 'Continue with Apple',
+    label: "Continue with Apple",
     icon: <Apple className="h-5 w-5 text-[#1D0035]" strokeWidth={2.2} />,
   },
   {
-    label: 'Connect with Wallet',
+    label: "Connect with Wallet",
     icon: <Wallet className="h-5 w-5 text-[#1D0035]" strokeWidth={2.2} />,
   },
 ];
 
 const buttonBaseClasses =
-  'flex w-[320px] items-center gap-3 rounded-sm bg-[#ffa4c8] px-5 py-3 text-sm text-[#1D0035]';
+  "flex w-[320px] items-center gap-3 rounded-sm bg-[#ffa4c8] px-5 py-3 text-sm text-[#1D0035]";
 
 export const RightSidebar = () => {
   const { data } = useTokenStats();

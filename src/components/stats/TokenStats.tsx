@@ -1,6 +1,12 @@
 "use client";
 
-import { useCallback, useMemo, useState, type ReactNode, type WheelEvent } from "react";
+import {
+  useCallback,
+  useMemo,
+  useState,
+  type ReactNode,
+  type WheelEvent,
+} from "react";
 
 import { TokenIcon } from '@/components/common/TokenIcon';
 import { Chart } from '@/components/Chart';
@@ -15,18 +21,7 @@ const STATUS_STYLES =
   "rounded-default border border-white/10 bg-black/20 px-3 py-2 text-xs font-semibold text-white/80";
 
 export const TokenStats = () => {
-  const [collapsed, setCollapsed] = useState(false);
   const { data, status, error } = useTokenStats();
-  const infoClass = useMemo(
-    () =>
-      [
-        "flex w-full min-w-0 flex-col gap-4 overflow-x-auto invisible-scroll px-4 transition-all duration-300 ease-in-out",
-        collapsed
-          ? "max-h-0 py-0 opacity-0 pointer-events-none"
-          : "max-h-[520px] py-[10px] opacity-100",
-      ].join(" "),
-    [collapsed],
-  );
 
   const isLoading = status === "loading";
   const isUnauthorized = status === "unauthorized";
@@ -91,7 +86,11 @@ export const TokenStats = () => {
   return (
     <div className="border-default relative flex h-full min-h-0 flex-1 flex-col border-r border-white/5">
       <div className="relative">
-        <div className={infoClass} aria-hidden={collapsed}>
+        <div
+          className={
+            "flex w-full min-w-0 flex-col gap-4 overflow-x-auto invisible-scroll px-4 transition-all duration-300 ease-in-out max-h-[520px] py-[10px] opacity-100"
+          }
+        >
           <div
             className="invisible-scroll no-scrollbar w-full overflow-x-auto"
             onWheel={handleStatsWheel}

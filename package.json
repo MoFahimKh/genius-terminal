@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@codex-data/sdk": "^2.0.0",
+    "@radix-ui/react-tooltip": "^1.2.8",
+    "@radix-ui/themes": "^3.3.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.12.2",
     "lucide-react": "^0.511.0",

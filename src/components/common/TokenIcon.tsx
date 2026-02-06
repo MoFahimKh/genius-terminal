@@ -1,5 +1,3 @@
-"use client";
-
 type TokenIconProps = {
   symbol: string;
   size?: number;
