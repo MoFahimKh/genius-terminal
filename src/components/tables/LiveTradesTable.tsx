@@ -3,8 +3,7 @@
 import { ExternalLinkIcon } from 'lucide-react';
 import { useMemo } from 'react';
 
-import { DEFAULT_CODEX_MARKET } from '@/config/market';
-import { useLatestTrades } from '@/hooks/useLatestTrades';
+import { useTokenEvents } from '@/context/TokenEventsContext';
 import { formatTimeAgo, formatTokenAmount, formatUsd, truncateAddress } from '@/lib/format';
 
 const blockchainExplorerByNetwork: Record<number, string> = {
@@ -27,12 +26,8 @@ const STATUS_STYLES =
   'rounded-default border border-white/10 bg-black/20 px-4 py-6 text-center text-sm font-medium text-white/70';
 
 export const LiveTradesTable = () => {
-  const { trades, status, error } = useLatestTrades({
-    address: DEFAULT_CODEX_MARKET.address,
-    networkId: DEFAULT_CODEX_MARKET.networkId,
-    maxEvents: 60,
-  });
-console.log({trades})
+  const { trades, status, error, networkId } = useTokenEvents();
+
   const maxUsd = useMemo(() => trades.reduce((acc, trade) => Math.max(acc, trade.amountUsd ?? 0), 0), [trades]);
 
   if (status === 'unauthorized') {
@@ -74,7 +69,7 @@ console.log({trades})
           {!isLoading &&
             trades.map((trade) => {
               const usdFraction = maxUsd ? Math.max(0.1, Math.min(1, trade.amountUsd / maxUsd)) : 0;
-              const explorerLink = buildExplorerLink(trade.makerAddress, DEFAULT_CODEX_MARKET.networkId);
+              const explorerLink = buildExplorerLink(trade.makerAddress, networkId);
               const rowKey = `${trade.id}-${trade.timestamp}-${trade.makerAddress ?? 'unknown'}`;
               return (
                 <tr key={rowKey} className="border-b border-white/5 transition-colors duration-200 hover:bg-row-hover">
