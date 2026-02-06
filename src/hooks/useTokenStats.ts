@@ -1,16 +1,13 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import type { FilterTokensQuery } from '@codex-data/sdk';
+
 import { TokenPairStatisticsType } from '@codex-data/sdk';
 
 import { getCodexClient } from '@/lib/codex/client';
 import { useTokenEvents } from '@/context/TokenEventsContext';
 import toNumber from '@/lib/toNumber';
-
-type FilterTokensResult = NonNullable<
-  NonNullable<NonNullable<FilterTokensQuery['filterTokens']>['results']>[number]
->;
+import { FilterTokensResult } from '@/types';
 
 const toTimestamp = (value?: string | number | null) => {
   if (value === null || value === undefined) return null;

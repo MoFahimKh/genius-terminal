@@ -5,24 +5,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getCodexClient } from '@/lib/codex/client';
 import { fetchRecentTokenEvents, subscribeToTokenEvents, type GraphqlTokenEvent } from '@/lib/codex/tokenEvents';
 import toNumber from '@/lib/toNumber';
+import { CodexTrade, UseLatestTradesOptions, ConnectionState } from '@/types';
 
-export type CodexTrade = {
-  id: string;
-  timestamp: number;
-  makerAddress: string | null;
-  side: 'buy' | 'sell';
-  amountToken: number;
-  amountUsd: number;
-  priceUsd: number | null;
-};
-
-type UseLatestTradesOptions = {
-  address: string;
-  networkId: number;
-  maxEvents?: number;
-};
-
-type ConnectionState = 'idle' | 'connecting' | 'ready' | 'reconnecting' | 'error' | 'unauthorized';
 
 const toTimestampMs = (value?: string | number | null) => {
   if (value === null || value === undefined) return Date.now();

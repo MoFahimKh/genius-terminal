@@ -8,33 +8,7 @@ import {
 
 import { getCodexClient } from "@/lib/codex/client";
 import toNumber from "@/lib/toNumber";
-
-export type TokenPool = {
-  id: string;
-  exchangeName: string;
-  exchangeIcon: string | null;
-  exchangeAddress: string | null;
-  tradeUrl: string | null;
-  pairLabel: string;
-  token0Icon: string | null;
-  token1Icon: string | null;
-  liquidityTokenSymbol: string | null;
-  liquidityTokenAmount: number | null;
-  liquidityUsd: number | null;
-  volumeUsd: {
-    "1h": number | null;
-    "4h": number | null;
-    "12h": number | null;
-    "24h": number | null;
-  };
-  createdAt: number | null;
-};
-
-type PoolsState = {
-  pools: TokenPool[];
-  loading: boolean;
-  error: string | null;
-};
+import { TokenPool, PoolsState } from "@/types";
 
 const pickTokenSymbol = (token?: any) =>
   token?.symbol ?? token?.info?.symbol ?? "—";

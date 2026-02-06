@@ -71,14 +71,14 @@ export const PoolsTable = ({ searchTerm }: PoolsTableProps) => {
   return (
     <div className="rounded-default border border-white/10">
       <table className="w-full min-w-[800px] table-fixed text-sm text-white">
-        <thead className="bg-[#1a1031] text-[11px] uppercase text-muted">
+        <thead className="bg-[#1a1031] text-[11px] text-[#eee0ff99]">
           <tr>
             <th className="px-3 py-2 text-left">Pool</th>
-            <th className="px-3 py-2 text-left">Pair</th>
-            <th className="px-3 py-2 text-left">Price / Mark Diff</th>
-            <th className="px-3 py-2 text-left">Backing Asset Liquidity</th>
-            <th className="px-3 py-2 text-left">
-              <div className="flex gap-4 justify-center">
+            <th className="px-3 py-2 text-right">Pair</th>
+            <th className="px-3 py-2 text-right">Price / Mark Price Diff</th>
+            <th className="px-3 py-2 text-right">Backing Asset Liquidity</th>
+            <th className="px-3 py-2 text-right">
+              <div className="flex gap-4 justify-end">
                 Volume{" "}
                 <div className="flex gap-2 text-white/40">
                   {VOLUME_WINDOWS.map((window) => (
@@ -93,8 +93,8 @@ export const PoolsTable = ({ searchTerm }: PoolsTableProps) => {
                 </div>
               </div>
             </th>
-            <th className="px-3 py-2 text-left">Age</th>
-            <th className="px-3 py-2 text-left">Buy / Sell</th>
+            <th className="px-3 py-2 text-right">Age</th>
+            <th className="px-3 py-2 text-right">Buy / Sell</th>
           </tr>
         </thead>
         <tbody>
@@ -134,21 +134,21 @@ export const PoolsTable = ({ searchTerm }: PoolsTableProps) => {
               </td>
 
               <td className="px-3 py-3">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-end gap-2">
+                  <span className="font-semibold text-[#eee0ff]">
+                    {pool.pairLabel}
+                  </span>
                   <TokenPairIcons
                     token0Icon={pool.token0Icon}
                     token1Icon={pool.token1Icon}
                   />
-                  <span className="font-semibold text-[#eee0ff]">
-                    {pool.pairLabel}
-                  </span>
                 </div>
               </td>
 
-              <td className="px-3 py-3 text-white/60">Coming soon</td>
+              <td className="px-3 py-3 text-white/60 text-end">Coming soon</td>
 
               <td className="px-3 py-3">
-                <div className="flex flex-col">
+                <div className="flex flex-row gap-2 items-center justify-end text-end">
                   <span className="font-semibold text-[#eee0ff]">
                     {pool.liquidityTokenAmount && pool.liquidityTokenSymbol
                       ? `${formatTokenAmount(pool.liquidityTokenAmount)} ${pool.liquidityTokenSymbol}`
@@ -163,16 +163,16 @@ export const PoolsTable = ({ searchTerm }: PoolsTableProps) => {
               </td>
 
               <td className="px-3 py-3">
-                <div className="flex flex-wrap gap-4 justify-center">
+                <div className="flex flex-wrap gap-4 justify-end">
                   <span className="text-[#eee0ff]">{formatUsd(pool.volumeUsd[selectedVolume])}</span>
                 </div>
               </td>
 
-              <td className="px-3 py-3 text-[#eee0ff]">
+              <td className="px-3 py-3 text-[#eee0ff] text-right">
                 {formatAge(pool.createdAt)}
               </td>
 
-              <td className="px-3 py-3 text-white/60">
+              <td className="px-3 py-3 text-white/60 text-right">
                 Coming soon
               </td>
             </tr>
@@ -225,7 +225,7 @@ const TokenPairIcons = ({
 }) => (
   <div className="relative flex size-8 items-center justify-center">
     <TokenIconCircle iconUrl={token0Icon} className="z-10" />
-    <TokenIconCircle iconUrl={token1Icon} className="absolute left-4 top-1" />
+    <TokenIconCircle iconUrl={token1Icon} className="absolute left-4" />
   </div>
 );
 
@@ -237,7 +237,7 @@ const TokenIconCircle = ({
   className?: string;
 }) => (
   <div
-    className={`flex size-5 items-center justify-center rounded-full border border-white/10 bg-[#1c1340] ${className ?? ""}`}
+    className={`flex size-5 items-center justify-center rounded-full border border-white/10 bg-black ${className ?? ""}`}
   >
     {iconUrl ? (
       <img

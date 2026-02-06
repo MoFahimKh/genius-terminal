@@ -3,6 +3,7 @@
 import type { ReactNode } from 'react';
 import Image from 'next/image';
 import { Apple, Wallet } from 'lucide-react';
+import { Metric } from '@/types';
 
 const WELCOME_IMAGE = {
   src: '/assets/images/welcome.png',
@@ -10,14 +11,6 @@ const WELCOME_IMAGE = {
   height: 692,
 };
 
-type Metric = {
-  label: string;
-  primary: string;
-  secondary?: string;
-  primaryTone: string;
-  secondaryTone?: string;
-  lineColor: string;
-};
 
 const METRICS: Metric[] = [
   {

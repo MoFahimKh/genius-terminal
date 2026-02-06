@@ -9,29 +9,7 @@ import {
 
 import { getCodexClient } from "@/lib/codex/client";
 import toNumber from "@/lib/toNumber";
-
-type FilterTokensResult = NonNullable<
-  NonNullable<FilterTokensQuery["filterTokens"]>["results"]
->[number];
-
-export type TrendingToken = {
-  id: string;
-  symbol: string;
-  name: string;
-  priceUsd: number | null;
-  marketCapUsd: number | null;
-  change24: number | null;
-  imageUrl: string | null;
-  networkId: number | null;
-};
-
-type HookStatus = "loading" | "ready" | "error" | "unauthorized";
-
-type UseTrendingTokensOptions = {
-  limit?: number;
-  refreshMs?: number;
-  minLiquidityUsd?: number;
-};
+import { FilterTokensResult, TrendingToken, UseTrendingTokensOptions, HookStatus } from "@/types";
 
 const mapToken = (
   item: FilterTokensResult | null,

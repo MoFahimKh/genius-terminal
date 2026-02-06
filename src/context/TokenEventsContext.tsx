@@ -3,7 +3,8 @@
 import { createContext, useContext, useMemo, type ReactNode } from 'react';
 
 import { DEFAULT_CODEX_MARKET } from '@/config/market';
-import { useLatestTrades, type CodexTrade } from '@/hooks/useLatestTrades';
+import { useLatestTrades } from '@/hooks/useLatestTrades';
+import { CodexTrade } from '@/types';
 
 type TokenEventsContextValue = {
   address: string;

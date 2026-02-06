@@ -1,7 +1,5 @@
 'use client';
 
-import { ChevronUp } from "lucide-react";
-
 export const CollapseToggle = ({ isCollapsed, onClick }: { isCollapsed: boolean; onClick: () => void }) => {
   const label = isCollapsed ? 'Expand section' : 'Collapse section';
   return (

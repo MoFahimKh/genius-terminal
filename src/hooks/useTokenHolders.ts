@@ -2,21 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { getCodexClient } from '@/lib/codex/client';
 import toNumber from '@/lib/toNumber';
-
-export interface Holder {
-  address: string;
-  shiftedBalance: number;
-  balanceUsd: number | null;
-  rank: number;
-}
-
-interface HoldersState {
-  holders: Holder[];
-  totalCount: number;
-  top10HoldersPercent: number | null;
-  loading: boolean;
-  error: string | null;
-}
+import { HoldersState } from '@/types';
 
 export function useTokenHolders(tokenAddress: string, networkId: number, limit = 50) {
   const [data, setData] = useState<HoldersState>({
