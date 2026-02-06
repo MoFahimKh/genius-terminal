@@ -224,10 +224,8 @@ export const TableSection = () => {
           </div>
         </div>
       </div>
-      <div className="invisible-scroll min-h-0 flex-1 overflow-y-auto">
-        <div className="min-w-[640px]">
-          <TableComponent searchTerm={searchInput} />
-        </div>
+      <div className="invisible-scroll min-h-0 flex-1 overflow-x-auto overflow-y-auto">
+        <TableComponent searchTerm={searchInput} />
       </div>
     </div>
   );

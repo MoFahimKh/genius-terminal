@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ['latin'], display: 'swap', variable: '--font-san
 
 export const metadata: Metadata = {
   title: 'Genius Terminal',
-  description: 'Pixel-accurate recreation of the Funnel terminal view using mock data.',
+  description: '',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

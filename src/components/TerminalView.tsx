@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 import { TrendingTokensStrip } from "@/components/common/TrendingTokensStrip";
 import { DragHandle } from "@/components/common/DragHandle";
@@ -29,18 +30,11 @@ export const TerminalView = () => {
       <div className="flex h-full min-h-0 w-full flex-1 flex-col md:flex-row">
         <div
           className="flex h-full min-w-0 flex-1 flex-col overflow-y-auto md:overflow-hidden"
-          style={{
-            width: isMobile
-              ? "100%"
-              : isSidebarCollapsed
-                ? "100%"
-                : `calc(100% - ${SIDEBAR_WIDTH}px)`,
-          }}
         >
           <TokenEventsProvider>
             <div
               ref={containerRef}
-              className="grid h-full w-full flex-1"
+              className="grid h-full w-full flex-1 min-w-0"
               style={{
                 gridTemplateColumns: "1fr",
                 gridTemplateRows: `minmax(0, ${topHeightPercent}%) minmax(0, ${100 - topHeightPercent}%)`,
@@ -51,7 +45,7 @@ export const TerminalView = () => {
               }}
             >
               <div
-                className="relative h-full min-h-0 w-full"
+                className="relative h-full min-h-0 w-full min-w-0"
                 style={{
                   gridArea: "stats",
                   pointerEvents: isDragging ? "none" : "auto",
@@ -61,7 +55,7 @@ export const TerminalView = () => {
                 <DragHandle onMouseDown={handleResizeStart} />
               </div>
               <div
-                className="invisible-scroll h-full min-h-0 w-full"
+                className="invisible-scroll h-full min-h-0 w-full min-w-0"
                 style={{
                   gridArea: "table",
                   pointerEvents: isDragging ? "none" : "auto",
@@ -91,13 +85,22 @@ export const TerminalView = () => {
           )}
         </div>
 
-        {!isMobile && !isSidebarCollapsed && (
-          <div
-            className="ml-auto hidden h-full flex-shrink-0 overflow-hidden md:block"
-            style={{ width: SIDEBAR_WIDTH }}
+        {!isMobile && (
+          <motion.div
+            className="hidden h-full overflow-hidden md:block"
+            initial={false}
+            animate={{
+              width: isSidebarCollapsed ? 0 : SIDEBAR_WIDTH,
+              opacity: isSidebarCollapsed ? 0 : 1,
+            }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            style={{ flexShrink: 0 }}
+            aria-hidden={isSidebarCollapsed}
           >
-            <RightSidebar />
-          </div>
+            <div className={isSidebarCollapsed ? "pointer-events-none" : ""}>
+              <RightSidebar />
+            </div>
+          </motion.div>
         )}
       </div>
 
