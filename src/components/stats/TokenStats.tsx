@@ -162,7 +162,7 @@ export const TokenStats = () => {
         </div>
       </div>
 
-      <div className="border-default relative min-h-[320px] flex-1 border-t border-white/5">
+      <div className="border-default relative flex-1 border-t border-white/5">
         <Chart />
       </div>
     </div>
