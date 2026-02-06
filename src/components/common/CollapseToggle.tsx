@@ -1,5 +1,7 @@
 'use client';
 
+import { ChevronUp } from "lucide-react";
+
 export const CollapseToggle = ({ isCollapsed, onClick }: { isCollapsed: boolean; onClick: () => void }) => {
   const label = isCollapsed ? 'Expand section' : 'Collapse section';
   return (
@@ -8,7 +10,7 @@ export const CollapseToggle = ({ isCollapsed, onClick }: { isCollapsed: boolean;
       aria-label={label}
       aria-expanded={!isCollapsed}
       onClick={onClick}
-      className="border-default card-bg absolute -bottom-2 left-4 z-20 flex h-3.5 w-14 cursor-pointer items-center justify-center rounded-b-md border-x border-b text-neutral-400 transition-colors hover:text-white">
+      className="bg-[#09001a] hover:bg-[#231646] absolute -bottom-2 left-4 z-20 flex h-4 w-8 cursor-pointer items-center justify-center rounded-[4px] border-2 border-default text-[#eee0ff] transition-colors ">
       <svg
         width="24"
         height="8"

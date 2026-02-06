@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import clsx from 'clsx';
+import clsx from "clsx";
 
 type PanelCollapseToggleProps = {
   isCollapsed: boolean;
@@ -8,8 +8,12 @@ type PanelCollapseToggleProps = {
   className?: string;
 };
 
-export const PanelCollapseToggle = ({ isCollapsed, onClick, className }: PanelCollapseToggleProps) => {
-  const label = isCollapsed ? 'Expand panel' : 'Collapse panel';
+export const PanelCollapseToggle = ({
+  isCollapsed,
+  onClick,
+  className,
+}: PanelCollapseToggleProps) => {
+  const label = isCollapsed ? "Expand panel" : "Collapse panel";
 
   return (
     <button
@@ -18,17 +22,35 @@ export const PanelCollapseToggle = ({ isCollapsed, onClick, className }: PanelCo
       aria-expanded={!isCollapsed}
       onClick={onClick}
       className={clsx(
-        'border-default card-bg flex h-4 w-14 items-center justify-center rounded-b-md border-x border-b text-neutral-400 shadow-lg transition-colors hover:text-white',
+        "bg-[#09001a] hover:bg-[#231646] z-20 flex h-10 w-6 cursor-pointer items-center justify-center rounded-[4px] border-2 border-default text-[#eee0ff] transition-colors ",
         className,
-      )}>
+      )}
+    >
       <svg
-        width="24"
-        height="8"
-        viewBox="0 0 24 8"
+        width="8"
+        height="24"
+        viewBox="0 0 9 24"
         fill="none"
-        className={`overflow-visible transition-transform duration-200 ${!isCollapsed ? 'rotate-180' : ''}`}>
-        <line x1="6" y1="4" x2="12" y2="6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        <line x1="12" y1="6" x2="18" y2="4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        className={`overflow-visible transition-transform duration-200 ${!isCollapsed ? "rotate-180" : ""}`}
+      >
+        <line
+          x1="6"
+          y1="6"
+          x2="4"
+          y2="12"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        <line
+          x1="4"
+          y1="12"
+          x2="6"
+          y2="18"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
       </svg>
     </button>
   );
