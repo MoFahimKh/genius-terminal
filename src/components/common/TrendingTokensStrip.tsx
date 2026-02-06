@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import clsx from 'clsx';
-import { type ReactNode } from 'react';
+import clsx from "clsx";
+import { type ReactNode } from "react";
 
-import { TokenIcon } from '@/components/common/TokenIcon';
-import { useTrendingTokens } from '@/hooks/useTrendingTokens';
-import { formatUsd } from '@/lib/format';
+import { TokenIcon } from "@/components/common/TokenIcon";
+import { useTrendingTokens } from "@/hooks/useTrendingTokens";
+import { formatUsd } from "@/lib/format";
 
 const PLACEHOLDER_ITEMS = Array.from({ length: 7 });
 
-const formatPercentChange = (value?: number | null) => {
-  if (value === null || value === undefined || Number.isNaN(value)) return '—';
+export const formatPercentChange = (value?: number | null) => {
+  if (value === null || value === undefined || Number.isNaN(value)) return "—";
   const digits = Math.abs(value) >= 10 ? 1 : 2;
   const formatted = value.toFixed(digits);
-  return `${value > 0 ? '+' : ''}${formatted}%`;
+  return `${value > 0 ? "+" : ""}${formatted}%`;
 };
 
 const StripMessage = ({ children }: { children: ReactNode }) => (
@@ -41,10 +41,16 @@ type TokenChipProps = {
   imageUrl: string | null;
 };
 
-const TokenChip = ({ symbol, name, price, change, imageUrl }: TokenChipProps) => {
+const TokenChip = ({
+  symbol,
+  name,
+  price,
+  change,
+  imageUrl,
+}: TokenChipProps) => {
   const isPositive = (change ?? 0) >= 0;
   return (
-    <div className="flex h-7 min-w-[168px] flex-shrink-0 items-center gap-3 rounded-full border border-white/5 bg-white/10 px-3 text-xs text-white">
+    <div className="flex h-7 min-w-[168px] flex-shrink-0 items-center gap-3 px-1.5 text-xs text-white">
       {imageUrl ? (
         <img
           src={imageUrl}
@@ -57,15 +63,19 @@ const TokenChip = ({ symbol, name, price, change, imageUrl }: TokenChipProps) =>
       ) : (
         <TokenIcon symbol={symbol} size={20} />
       )}
-      <div className="flex min-w-0 flex-col leading-tight">
-        <span className="text-[11px] font-semibold uppercase tracking-wide">{symbol}</span>
-        <span className="text-[10px] text-white/70">{formatUsd(price)}</span>
-      </div>
+      <span className="text-[14px] font-medium uppercase tracking-wide">
+        {symbol}
+      </span>
+
+      <span className="text-[14px] font-semibold text-[#eee0ff80]">{formatUsd(price)}</span>
       <span
         className={clsx(
-          'ml-auto text-[11px] font-semibold',
-          isPositive ? 'text-[#00FFB2]' : 'text-[#FF6B6B]',
-        )}>
+          "ml-auto text-[11px] font-semibold rounded-sm px-1",
+          isPositive
+            ? "text-[#36d399] bg-[#36d39933]"
+            : "text-[#F87272] bg-[#F8727233]",
+        )}
+      >
         {formatPercentChange(change)}
       </span>
     </div>
@@ -74,24 +84,32 @@ const TokenChip = ({ symbol, name, price, change, imageUrl }: TokenChipProps) =>
 
 export const TrendingTokensStrip = () => {
   const { tokens, status, error } = useTrendingTokens();
-  const isLoading = status === 'idle' || status === 'loading';
-
+  const isLoading = status === "idle" || status === "loading";
+  console.log(tokens);
   return (
-    <div className="flex w-full flex-shrink-0 border-b border-white/10 bg-gradient-to-r from-[#100820]/70 via-[#0B0A15]/80 to-[#050508]/70">
-      <div className="invisible-scroll flex h-9 w-full items-center gap-3 overflow-x-auto px-4">
-        {status === 'unauthorized' && (
-          <StripMessage>Connect NEXT_PUBLIC_CODEX_API_KEY to unlock trending tokens.</StripMessage>
+    <div className="flex w-full flex-shrink-0">
+      <div className="no-scrollbar flex h-11 w-full items-center gap-3 overflow-x-auto px-4 py-1">
+        {status === "unauthorized" && (
+          <StripMessage>
+            Connect NEXT_PUBLIC_CODEX_API_KEY to unlock trending tokens.
+          </StripMessage>
         )}
-        {status === 'error' && (
-          <StripMessage>{error ?? 'Unable to load trending tokens.'}</StripMessage>
+        {status === "error" && (
+          <StripMessage>
+            {error ?? "Unable to load trending tokens."}
+          </StripMessage>
         )}
-        {status !== 'unauthorized' && status !== 'error' && (
+        {status !== "unauthorized" && status !== "error" && (
           <>
             {isLoading && tokens.length === 0
-              ? PLACEHOLDER_ITEMS.map((_, idx) => <PlaceholderChip key={`placeholder-${idx}`} />)
+              ? PLACEHOLDER_ITEMS.map((_, idx) => (
+                  <PlaceholderChip key={`placeholder-${idx}`} />
+                ))
               : null}
             {!isLoading && tokens.length === 0 ? (
-              <StripMessage>No trending tokens available right now.</StripMessage>
+              <StripMessage>
+                No trending tokens available right now.
+              </StripMessage>
             ) : null}
             {tokens.map((token) => (
               <TokenChip
