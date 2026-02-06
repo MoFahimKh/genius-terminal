@@ -1,6 +1,11 @@
 # Genius Terminal - Asset Page Recreation
 
-A Next.js application that reproduces the asset page functionality from TradeGenius, featuring real-time token data, live trading events, and liquidity pool information using Codex API.
+A Next.js application that reproduces the asset page functionality from TradeGenius, featuring real-time token data, live t## 🚧 Known Limitations
+
+- Chart component is a placeholder (can be replaced with a charting library like Chart.js or Recharts)
+- Holders data requires Codex Premium API access (not included in free tier)
+- Search functionality in tables is under active development
+- **Mobile view is in progress** — Due to time constraints, the mobile responsiveness is not fully optimized yet. Desktop experience is fully functionalg events, and liquidity pool information using Codex API.
 
 ---
 
