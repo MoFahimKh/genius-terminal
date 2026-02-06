@@ -4,21 +4,30 @@ import { Copy, ExternalLink } from "lucide-react";
 import { useTokenEvents } from "@/context/TokenEventsContext";
 import { useTokenPools } from "@/hooks/useTokenPools";
 import { formatTokenAmount, formatUsd, truncateAddress } from "@/lib/format";
+import { useState } from "react";
 
 type PoolsTableProps = {
   searchTerm: string;
 };
 
-const VOLUME_WINDOWS = [
+type LabelType = "1h" | "4h" | "12h" | "24h"
+
+const VOLUME_WINDOWS:{key:string,label:LabelType}[] = [
   { key: "1h", label: "1h" },
   { key: "4h", label: "4h" },
   { key: "12h", label: "12h" },
   { key: "24h", label: "24h" },
-] as const;
+];
 
 export const PoolsTable = ({ searchTerm }: PoolsTableProps) => {
   const { address, networkId } = useTokenEvents();
-  const { pools, loading, error } = useTokenPools(address, networkId ?? undefined);
+  const [selectedVolume, setSelectedVolume] = useState<LabelType>(
+    VOLUME_WINDOWS[0].label,
+  );
+  const { pools, loading, error } = useTokenPools(
+    address,
+    networkId ?? undefined,
+  );
 
   if (!address || !networkId) {
     return <EmptyState message="Select a token to see its pools." />;
@@ -69,54 +78,55 @@ export const PoolsTable = ({ searchTerm }: PoolsTableProps) => {
             <th className="px-3 py-2 text-left">Price / Mark Diff</th>
             <th className="px-3 py-2 text-left">Backing Asset Liquidity</th>
             <th className="px-3 py-2 text-left">
-              <div className="flex gap-4">
+              <div className="flex gap-4 justify-center">
                 Volume{" "}
                 <div className="flex gap-2 text-white/40">
                   {VOLUME_WINDOWS.map((window) => (
-                    <span key={window.key}>{window.label}</span>
+                    <span
+                      onClick={() => setSelectedVolume(window.label)}
+                      className={`cursor-pointer select-none ${selectedVolume === window.label ? "text-[#eee0ff]" : ""}`}
+                      key={window.key}
+                    >
+                      {window.label}
+                    </span>
                   ))}
                 </div>
               </div>
             </th>
             <th className="px-3 py-2 text-left">Age</th>
-            <th className="px-3 py-2 text-right">Buy / Sell</th>
+            <th className="px-3 py-2 text-left">Buy / Sell</th>
           </tr>
         </thead>
         <tbody>
           {filteredPools.map((pool) => (
             <tr key={pool.id} className="border-b border-white/5 text-[13px]">
               <td className="px-3 py-3">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <ExchangeAvatar
                     name={pool.exchangeName}
                     iconUrl={pool.exchangeIcon}
                   />
-                  <div className="flex flex-col">
-                    <span className="font-semibold text-white">
-                      {pool.exchangeName}
-                    </span>
-                    <span className="text-xs text-white/50">
-                      {truncateAddress(pool.exchangeAddress)}
-                    </span>
-                  </div>
-                  <div className="ml-auto flex gap-2 text-white/50">
+                  <span className="font-semibold text-[14px] text-[#eee0ff]">
+                    {pool.exchangeName}
+                  </span>
+                  <div className="flex gap-1 text-white/50">
                     <button
                       type="button"
                       onClick={() => handleCopy(pool.exchangeAddress)}
-                      className="rounded-full border border-white/10 p-1 hover:text-white"
+                      className="p-1 hover:text-white"
                       aria-label="Copy pool address"
                     >
-                      <Copy className="size-3.5" />
+                      <Copy className="size-3" />
                     </button>
                     {pool.tradeUrl && (
                       <a
                         href={pool.tradeUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="rounded-full border border-white/10 p-1 hover:text-white"
+                        className=" p-1 hover:text-white"
                         aria-label="Open trade link"
                       >
-                        <ExternalLink className="size-3.5" />
+                        <ExternalLink className="size-3" />
                       </a>
                     )}
                   </div>
@@ -129,7 +139,7 @@ export const PoolsTable = ({ searchTerm }: PoolsTableProps) => {
                     token0Icon={pool.token0Icon}
                     token1Icon={pool.token1Icon}
                   />
-                  <span className="font-semibold text-white">
+                  <span className="font-semibold text-[#eee0ff]">
                     {pool.pairLabel}
                   </span>
                 </div>
@@ -139,7 +149,7 @@ export const PoolsTable = ({ searchTerm }: PoolsTableProps) => {
 
               <td className="px-3 py-3">
                 <div className="flex flex-col">
-                  <span className="font-semibold text-white">
+                  <span className="font-semibold text-[#eee0ff]">
                     {pool.liquidityTokenAmount && pool.liquidityTokenSymbol
                       ? `${formatTokenAmount(pool.liquidityTokenAmount)} ${pool.liquidityTokenSymbol}`
                       : "—"}
@@ -153,27 +163,16 @@ export const PoolsTable = ({ searchTerm }: PoolsTableProps) => {
               </td>
 
               <td className="px-3 py-3">
-                <div className="flex flex-wrap gap-4">
-                  {VOLUME_WINDOWS.map((window) => (
-                    <div key={window.key} className="flex flex-col">
-                      <span className="text-[11px] uppercase text-white/40">
-                        {window.label}
-                      </span>
-                      <span className="font-semibold text-white">
-                        {pool.volumeUsd[window.key] === null
-                          ? "—"
-                          : formatUsd(pool.volumeUsd[window.key])}
-                      </span>
-                    </div>
-                  ))}
+                <div className="flex flex-wrap gap-4 justify-center">
+                  <span className="text-[#eee0ff]">{formatUsd(pool.volumeUsd[selectedVolume])}</span>
                 </div>
               </td>
 
-              <td className="px-3 py-3 text-white">
+              <td className="px-3 py-3 text-[#eee0ff]">
                 {formatAge(pool.createdAt)}
               </td>
 
-              <td className="px-3 py-3 text-right text-white/60">
+              <td className="px-3 py-3 text-white/60">
                 Coming soon
               </td>
             </tr>
@@ -202,10 +201,10 @@ const ExchangeAvatar = ({
       <img
         src={iconUrl}
         alt={name}
-        width={32}
-        height={32}
+        width={24}
+        height={24}
         loading="lazy"
-        className="size-8 rounded-full object-cover"
+        className="size-6 rounded-full object-cover"
       />
     );
   }
@@ -226,7 +225,7 @@ const TokenPairIcons = ({
 }) => (
   <div className="relative flex size-8 items-center justify-center">
     <TokenIconCircle iconUrl={token0Icon} className="z-10" />
-    <TokenIconCircle iconUrl={token1Icon} className="absolute left-3 top-1" />
+    <TokenIconCircle iconUrl={token1Icon} className="absolute left-4 top-1" />
   </div>
 );
 
