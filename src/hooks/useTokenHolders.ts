@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { getCodexClient } from '@/lib/codex/client';
+import toNumber from '@/lib/toNumber';
 
 export interface Holder {
   address: string;
@@ -16,12 +17,6 @@ interface HoldersState {
   loading: boolean;
   error: string | null;
 }
-
-const toNumber = (value?: string | number | null) => {
-  if (value === null || value === undefined) return null;
-  const parsed = typeof value === 'number' ? value : Number(value);
-  return Number.isFinite(parsed) ? parsed : null;
-};
 
 export function useTokenHolders(tokenAddress: string, networkId: number, limit = 50) {
   const [data, setData] = useState<HoldersState>({

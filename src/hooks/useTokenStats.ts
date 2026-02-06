@@ -6,19 +6,11 @@ import { TokenPairStatisticsType } from '@codex-data/sdk';
 
 import { getCodexClient } from '@/lib/codex/client';
 import { useTokenEvents } from '@/context/TokenEventsContext';
+import toNumber from '@/lib/toNumber';
 
 type FilterTokensResult = NonNullable<
   NonNullable<NonNullable<FilterTokensQuery['filterTokens']>['results']>[number]
 >;
-
-const toNumber = (value?: string | number | null) => {
-  if (value === null || value === undefined) return null;
-  if (typeof value === 'number') {
-    return Number.isFinite(value) ? value : null;
-  }
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : null;
-};
 
 const toTimestamp = (value?: string | number | null) => {
   if (value === null || value === undefined) return null;

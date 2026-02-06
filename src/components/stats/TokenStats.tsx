@@ -98,7 +98,7 @@ export const TokenStats = () => {
       <div className="relative">
         <div className={infoClass} aria-hidden={collapsed}>
           <div
-            className="invisible-scroll w-full overflow-x-auto"
+            className="invisible-scroll no-scrollbar w-full overflow-x-auto"
             onWheel={handleStatsWheel}
           >
             <div className="flex min-w-max items-center gap-4 whitespace-nowrap">

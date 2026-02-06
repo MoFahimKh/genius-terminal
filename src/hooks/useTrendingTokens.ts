@@ -8,6 +8,7 @@ import {
 } from "@codex-data/sdk";
 
 import { getCodexClient } from "@/lib/codex/client";
+import toNumber from "@/lib/toNumber";
 
 type FilterTokensResult = NonNullable<
   NonNullable<FilterTokensQuery["filterTokens"]>["results"]
@@ -30,12 +31,6 @@ type UseTrendingTokensOptions = {
   limit?: number;
   refreshMs?: number;
   minLiquidityUsd?: number;
-};
-
-const toNumber = (v?: string | number | null) => {
-  if (v === null || v === undefined) return null;
-  const n = typeof v === "number" ? v : Number(v);
-  return Number.isFinite(n) ? n : null;
 };
 
 const mapToken = (

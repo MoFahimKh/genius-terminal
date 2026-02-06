@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import {
   PairRankingAttribute,
   RankingDirection,
-  type FilterPairsQuery,
 } from "@codex-data/sdk";
 
 import { getCodexClient } from "@/lib/codex/client";
+import toNumber from "@/lib/toNumber";
 
 export type TokenPool = {
   id: string;
@@ -34,12 +34,6 @@ type PoolsState = {
   pools: TokenPool[];
   loading: boolean;
   error: string | null;
-};
-
-const toNumber = (value?: string | number | null) => {
-  if (value === null || value === undefined) return null;
-  const parsed = typeof value === "number" ? value : Number(value);
-  return Number.isFinite(parsed) ? parsed : null;
 };
 
 const pickTokenSymbol = (token?: any) =>

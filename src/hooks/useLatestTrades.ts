@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { getCodexClient } from '@/lib/codex/client';
 import { fetchRecentTokenEvents, subscribeToTokenEvents, type GraphqlTokenEvent } from '@/lib/codex/tokenEvents';
+import toNumber from '@/lib/toNumber';
 
 export type CodexTrade = {
   id: string;
@@ -22,12 +23,6 @@ type UseLatestTradesOptions = {
 };
 
 type ConnectionState = 'idle' | 'connecting' | 'ready' | 'reconnecting' | 'error' | 'unauthorized';
-
-const toNumber = (value?: string | number | null) => {
-  if (value === null || value === undefined) return null;
-  const parsed = typeof value === 'number' ? value : Number(value);
-  return Number.isFinite(parsed) ? parsed : null;
-};
 
 const toTimestampMs = (value?: string | number | null) => {
   if (value === null || value === undefined) return Date.now();
