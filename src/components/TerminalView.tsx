@@ -15,7 +15,12 @@ import { TokenEventsProvider } from "@/context/TokenEventsContext";
 
 const SIDEBAR_WIDTH = 365;
 
-export const TerminalView = () => {
+type TerminalViewProps = {
+  address?: string;
+  networkId?: number;
+};
+
+export const TerminalView = ({ address, networkId }: TerminalViewProps) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const isMobile = useIsMobile();
 
@@ -27,7 +32,7 @@ export const TerminalView = () => {
   return (
     <div className="relative flex h-screen w-full flex-col overflow-y-auto text-white md:overflow-hidden">
       <TrendingTokensStrip />
-      <TokenEventsProvider>
+      <TokenEventsProvider address={address} networkId={networkId}>
         <div className="flex h-full min-h-0 w-full flex-1 flex-col md:flex-row">
           <div
             className="flex h-full min-w-0 flex-1 flex-col overflow-y-auto md:overflow-hidden"
