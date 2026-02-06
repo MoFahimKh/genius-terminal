@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 type TokenIconProps = {
   symbol: string;
@@ -6,11 +6,7 @@ type TokenIconProps = {
   imageUrl?: string | null;
 };
 
-export const TokenIcon = ({
-  symbol,
-  size = 28,
-  imageUrl,
-}: TokenIconProps) => {
+export const TokenIcon = ({ symbol, size = 28, imageUrl }: TokenIconProps) => {
   const borderSize = 2; // thickness of border
 
   return (
@@ -22,11 +18,7 @@ export const TokenIcon = ({
       }}
       className="shrink-0 rounded-lg bg-[#ffa4c8]"
     >
-      <div
-        className="flex h-full w-full items-center justify-center overflow-hidden rounded-md
-                   bg-gradient-to-br from-[#5c8aff] to-[#001c73]
-                   text-xs font-semibold uppercase text-white"
-      >
+      <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-md bg-gradient-to-br from-[#5c8aff] to-[#001c73] text-xs font-semibold uppercase text-white">
         {imageUrl ? (
           <img
             src={imageUrl}

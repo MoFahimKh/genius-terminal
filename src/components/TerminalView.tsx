@@ -12,7 +12,7 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { useVerticalSplit } from "@/hooks/useVerticalSplit";
 import { TokenEventsProvider } from "@/context/TokenEventsContext";
 
-const SIDEBAR_WIDTH = 288;
+const SIDEBAR_WIDTH = 365;
 
 export const TerminalView = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -27,9 +27,8 @@ export const TerminalView = () => {
     <div className="relative flex h-screen w-full flex-col overflow-y-auto text-white md:overflow-hidden">
       <TrendingTokensStrip />
       <div className="flex h-full min-h-0 w-full flex-1 flex-col md:flex-row">
-        {/* Add width calculation here */}
         <div
-          className="flex h-full flex-1 flex-col overflow-y-auto md:overflow-hidden"
+          className="flex h-full min-w-0 flex-1 flex-col overflow-y-auto md:overflow-hidden"
           style={{
             width: isMobile
               ? "100%"
@@ -93,7 +92,10 @@ export const TerminalView = () => {
         </div>
 
         {!isMobile && !isSidebarCollapsed && (
-          <div className="ml-auto hidden h-full w-64 flex-shrink-0 overflow-hidden md:block">
+          <div
+            className="ml-auto hidden h-full flex-shrink-0 overflow-hidden md:block"
+            style={{ width: SIDEBAR_WIDTH }}
+          >
             <RightSidebar />
           </div>
         )}
