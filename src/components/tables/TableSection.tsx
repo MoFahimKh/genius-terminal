@@ -5,6 +5,10 @@ import { Search } from 'lucide-react';
 import { twMerge } from 'tailwind-merge';
 
 import { LiveTradesTable } from '@/components/tables/LiveTradesTable';
+import { PoolsTable as TokenPoolsTable } from '@/components/tables/PoolsTable';
+import { useTokenEvents } from '@/context/TokenEventsContext';
+import { useTokenHolders } from '@/hooks/useTokenHolders';
+import { formatTokenAmount, formatUsd, truncateAddress } from '@/lib/format';
 import { mockTables } from '@/mock/data';
 
 const FILTERS = ['Trades', 'Positions', 'Pools', 'Holders', 'Traders', 'Orders', 'History', 'Exited'] as const;
@@ -95,8 +99,81 @@ const PlaceholderTable = ({ message }: { message: string }) => (
 );
 
 const TradesTable: React.FC<TableComponentProps> = () => <LiveTradesTable />;
-const PoolsTable: React.FC<TableComponentProps> = () => <PlaceholderTable message="Pools data is not available yet." />;
-const HoldersTable: React.FC<TableComponentProps> = () => <PlaceholderTable message="Holders data is not available yet." />;
+const HoldersTable: React.FC<TableComponentProps> = ({ searchTerm }) => {
+  const { address, networkId } = useTokenEvents();
+  const { holders, loading, error, totalCount, top10HoldersPercent } = useTokenHolders(address, networkId);
+
+  if (!address || !networkId) {
+    return <PlaceholderTable message="Select a token to view top holders." />;
+  }
+
+  if (error) {
+    return <PlaceholderTable message={error} />;
+  }
+
+  if (loading) {
+    return <PlaceholderTable message="Loading holders…" />;
+  }
+
+  const normalizedSearch = searchTerm.trim().toLowerCase();
+  const filteredHolders =
+    normalizedSearch.length === 0
+      ? holders
+      : holders.filter((holder) => holder.address.toLowerCase().includes(normalizedSearch));
+
+  if (filteredHolders.length === 0) {
+    return <PlaceholderTable message={normalizedSearch ? 'No holders match your search.' : 'No holder data received yet.'} />;
+  }
+
+  const maxBalance = Math.max(...filteredHolders.map((holder) => holder.shiftedBalance), 0);
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-wrap gap-4 text-xs text-white/70">
+        <span>Total holders: {totalCount.toLocaleString()}</span>
+        {top10HoldersPercent !== null && (
+          <span>Top 10 control {Number(top10HoldersPercent).toFixed(2)}%</span>
+        )}
+      </div>
+      <div className="invisible-scroll overflow-x-auto rounded-default border border-white/10">
+        <table className="w-full min-w-[640px] table-fixed text-sm text-white">
+          <thead className="bg-white/5 text-[11px] uppercase text-muted">
+            <tr>
+              <th className="w-12 px-3 py-2 text-left">#</th>
+              <th className="px-3 py-2 text-left">Holder</th>
+              <th className="px-3 py-2 text-left">Balance</th>
+              <th className="px-3 py-2 text-left">Balance (USD)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredHolders.map((holder) => (
+              <tr key={holder.address} className="border-b border-white/5 text-[13px]">
+                <td className="px-3 py-3 text-white/60">{holder.rank}</td>
+                <td className="px-3 py-3 font-semibold text-[#7DD3FC]">{truncateAddress(holder.address)}</td>
+                <td className="px-3 py-3">
+                  <div className="flex flex-col gap-1">
+                    <span className="font-semibold text-white">{formatTokenAmount(holder.shiftedBalance)}</span>
+                    {maxBalance > 0 && (
+                      <div className="h-1.5 rounded-full bg-white/5">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-[#7C5CFF] to-[#F472B6]"
+                          style={{ width: `${(holder.shiftedBalance / maxBalance) * 100}%` }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </td>
+                <td className="px-3 py-3 text-white/80">
+                  {holder.balanceUsd === null ? '—' : formatUsd(holder.balanceUsd)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
 const TradersTable: React.FC<TableComponentProps> = () => <PlaceholderTable message="Traders data is not available yet." />;
 const HistoryTable: React.FC<TableComponentProps> = () => <PlaceholderTable message="Nothing here yet, it is ok." />;
 const ExitedTable: React.FC<TableComponentProps> = () => <PlaceholderTable message="Nothing here yet, it is ok." />;
@@ -104,7 +181,7 @@ const ExitedTable: React.FC<TableComponentProps> = () => <PlaceholderTable messa
 const TABLE_COMPONENTS: Record<Filter, React.FC<TableComponentProps>> = {
   Trades: TradesTable,
   Positions: PositionsTable,
-  Pools: PoolsTable,
+  Pools: (props) => <TokenPoolsTable {...props} />,
   Holders: HoldersTable,
   Traders: TradersTable,
   Orders: OrdersTable,

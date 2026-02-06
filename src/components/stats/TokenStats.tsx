@@ -20,7 +20,6 @@ const STATUS_STYLES =
 export const TokenStats = () => {
   const [collapsed, setCollapsed] = useState(false);
   const { data, status, error } = useTokenStats();
-  console.log(data);
   const infoClass = useMemo(
     () =>
       [

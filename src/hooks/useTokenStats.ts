@@ -6,7 +6,6 @@ import { TokenPairStatisticsType } from '@codex-data/sdk';
 
 import { getCodexClient } from '@/lib/codex/client';
 import { useTokenEvents } from '@/context/TokenEventsContext';
-import type { CodexTrade } from '@/hooks/useLatestTrades';
 
 type FilterTokensResult = NonNullable<
   NonNullable<NonNullable<FilterTokensQuery['filterTokens']>['results']>[number]

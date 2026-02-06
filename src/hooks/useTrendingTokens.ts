@@ -1,31 +1,30 @@
-'use client';
+"use client";
 
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { RankingDirection, TokenRankingAttribute, type FilterTokensQuery } from '@codex-data/sdk';
+import { useEffect, useState } from "react";
+import {
+  RankingDirection,
+  TokenRankingAttribute,
+  type FilterTokensQuery,
+} from "@codex-data/sdk";
 
-import { getCodexClient } from '@/lib/codex/client';
-
-const toNumber = (value?: string | number | null) => {
-  if (value === null || value === undefined) return null;
-  if (typeof value === 'number') return Number.isFinite(value) ? value : null;
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : null;
-};
+import { getCodexClient } from "@/lib/codex/client";
 
 type FilterTokensResult = NonNullable<
-  NonNullable<NonNullable<FilterTokensQuery['filterTokens']>['results']>[number]
->;
+  NonNullable<FilterTokensQuery["filterTokens"]>["results"]
+>[number];
 
 export type TrendingToken = {
   id: string;
   symbol: string;
   name: string;
   priceUsd: number | null;
+  marketCapUsd: number | null;
   change24: number | null;
   imageUrl: string | null;
+  networkId: number | null;
 };
 
-type HookStatus = 'idle' | 'loading' | 'ready' | 'error' | 'unauthorized';
+type HookStatus = "loading" | "ready" | "error" | "unauthorized";
 
 type UseTrendingTokensOptions = {
   limit?: number;
@@ -33,79 +32,73 @@ type UseTrendingTokensOptions = {
   minLiquidityUsd?: number;
 };
 
-const mapTokenResult = (result: FilterTokensResult, index: number): TrendingToken => {
-  const tokenData = result.token;
-  const tokenInfo = tokenData?.info;
-  const id =
-    tokenData?.address ??
-    result.pair?.address ??
-    result.quoteToken ??
-    `${tokenData?.symbol ?? 'token'}-${index}`;
+const toNumber = (v?: string | number | null) => {
+  if (v === null || v === undefined) return null;
+  const n = typeof v === "number" ? v : Number(v);
+  return Number.isFinite(n) ? n : null;
+};
 
-  const symbol = (tokenData?.symbol ?? tokenInfo?.symbol ?? 'TKN').toUpperCase();
-  const name = tokenInfo?.name ?? tokenData?.name ?? symbol;
+const mapToken = (
+  item: FilterTokensResult | null,
+  index: number,
+): TrendingToken | null => {
+  if (!item) return null;
+  const token = item.token;
+  const info = token?.info;
+
   const imageUrl =
-    tokenInfo?.imageSmallUrl ??
-    tokenInfo?.imageThumbUrl ??
-    tokenInfo?.imageLargeUrl ??
+    info?.imageSmallUrl ??
+    info?.imageThumbUrl ??
+    info?.imageLargeUrl ??
     null;
 
   return {
-    id,
-    symbol,
-    name,
+    id:
+      token?.address ??
+      item.pair?.address ??
+      `${token?.symbol ?? "token"}-${index}`,
+    symbol: (token?.symbol ?? info?.symbol ?? "TKN").toUpperCase(),
+    name: info?.name ?? token?.name ?? "Unknown",
     imageUrl,
-    priceUsd: toNumber(result.priceUSD),
-    change24: toNumber(result.change24),
+    networkId: info?.networkId ?? token?.networkId ?? item.liquidPair?.networkId ?? null,
+    priceUsd: toNumber(item.priceUSD),
+    marketCapUsd: toNumber(item.marketCap ?? item.circulatingMarketCap),
+    change24: toNumber(item.change24),
   };
 };
 
-export const useTrendingTokens = ({
-  limit = 20,
+export function useTrendingTokens({
+  limit = 200,
   refreshMs = 30_000,
   minLiquidityUsd = 10_000,
-}: UseTrendingTokensOptions = {}) => {
-  const apiKey = process.env.NEXT_PUBLIC_CODEX_API_KEY;
+}: UseTrendingTokensOptions = {}) {
   const [tokens, setTokens] = useState<TrendingToken[]>([]);
-  const [status, setStatus] = useState<HookStatus>('idle');
+  const [status, setStatus] = useState<HookStatus>("loading");
   const [error, setError] = useState<string | null>(null);
-  const timerRef = useRef<number | null>(null);
+
+  const apiKey = process.env.NEXT_PUBLIC_CODEX_API_KEY;
 
   useEffect(() => {
-    if (typeof window === 'undefined') return undefined;
-
     if (!apiKey) {
-      setStatus('unauthorized');
-      setError('Missing NEXT_PUBLIC_CODEX_API_KEY');
-      setTokens([]);
-      return undefined;
+      setStatus("unauthorized");
+      setError("Missing NEXT_PUBLIC_CODEX_API_KEY");
+      return;
     }
 
     const sdk = getCodexClient(apiKey);
-    if (!sdk) return undefined;
+    if (!sdk) {
+      setStatus("error");
+      setError("Failed to initialize Codex client");
+      return;
+    }
 
-    let isMounted = true;
-
-    const clearTimer = () => {
-      if (timerRef.current) {
-        window.clearTimeout(timerRef.current);
-        timerRef.current = null;
-      }
-    };
-
-    const scheduleNext = () => {
-      if (refreshMs <= 0) return;
-      clearTimer();
-      timerRef.current = window.setTimeout(() => {
-        void fetchTokens();
-      }, refreshMs);
-    };
+    let cancelled = false;
 
     const fetchTokens = async () => {
-      if (!isMounted) return;
-      setStatus((prev) => (prev === 'ready' ? prev : 'loading'));
       try {
-        const response = await sdk.queries.filterTokens({
+        setStatus("loading");
+
+        const res = await sdk.queries.filterTokens({
           limit,
           rankings: [
             {
@@ -114,45 +107,42 @@ export const useTrendingTokens = ({
             },
           ],
           filters: {
-            liquidity: {
-              gt: minLiquidityUsd,
-            },
+            liquidity: { gt: minLiquidityUsd },
           },
         });
-        if (!isMounted) return;
-        const results = response.filterTokens?.results ?? [];
+
+        if (cancelled) return;
+
+        const results = res.filterTokens?.results ?? [];
+
         const mapped = results
-          .map((item, idx) => (item ? mapTokenResult(item, idx) : null))
-          .filter((item): item is TrendingToken => Boolean(item));
+          .map((r, i) => mapToken(r, i))
+          .filter((token): token is TrendingToken => Boolean(token));
+
         setTokens(mapped);
-        setStatus('ready');
+
+        setStatus("ready");
         setError(null);
       } catch (err) {
-        if (!isMounted) return;
-        setStatus('error');
-        setError(err instanceof Error ? err.message : 'Unable to load trending tokens');
-      } finally {
-        if (!isMounted) return;
-        scheduleNext();
+        if (cancelled) return;
+        setStatus("error");
+        setError(err instanceof Error ? err.message : "Failed to load tokens");
       }
     };
 
-    void fetchTokens();
+    fetchTokens();
+
+    if (refreshMs > 0) {
+      const id = setInterval(fetchTokens, refreshMs);
+      return () => {
+        cancelled = true;
+        clearInterval(id);
+      };
+    }
 
     return () => {
-      isMounted = false;
-      clearTimer();
+      cancelled = true;
     };
   }, [apiKey, limit, refreshMs, minLiquidityUsd]);
-
-  const memoized = useMemo(
-    () => ({
-      tokens,
-      status,
-      error,
-    }),
-    [tokens, status, error],
-  );
-
-  return memoized;
-};
+  return { tokens, status, error };
+}
