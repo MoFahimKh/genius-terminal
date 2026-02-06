@@ -1,16 +1,23 @@
-'use client';
+"use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { getCodexClient } from '@/lib/codex/client';
-import { fetchRecentTokenEvents, subscribeToTokenEvents } from '@/lib/codex/tokenEvents';
-import toNumber from '@/lib/toNumber';
-import { CodexTrade, UseLatestTradesOptions, ConnectionState, GraphqlTokenEvent } from '@/types';
-
+import { getCodexClient } from "@/lib/codex/client";
+import {
+  fetchRecentTokenEvents,
+  subscribeToTokenEvents,
+} from "@/lib/codex/tokenEvents";
+import { toNumber } from "@/lib/format";
+import {
+  CodexTrade,
+  UseLatestTradesOptions,
+  ConnectionState,
+  GraphqlTokenEvent,
+} from "@/types";
 
 const toTimestampMs = (value?: string | number | null) => {
   if (value === null || value === undefined) return Date.now();
-  if (typeof value === 'number') {
+  if (typeof value === "number") {
     return value > 1e12 ? value : value * 1000;
   }
   const numeric = Number(value);
@@ -70,9 +77,13 @@ const normalizeEvent = (event: GraphqlTokenEvent): CodexTrade | null => {
   };
 };
 
-export const useLatestTrades = ({ address, networkId, maxEvents = 60 }: UseLatestTradesOptions) => {
+export const useLatestTrades = ({
+  address,
+  networkId,
+  maxEvents = 60,
+}: UseLatestTradesOptions) => {
   const [trades, setTrades] = useState<CodexTrade[]>([]);
-  const [status, setStatus] = useState<ConnectionState>('idle');
+  const [status, setStatus] = useState<ConnectionState>("idle");
   const [error, setError] = useState<string | null>(null);
   const [clock, setClock] = useState(() => Date.now());
   const reconnectAttemptsRef = useRef(0);
@@ -81,7 +92,7 @@ export const useLatestTrades = ({ address, networkId, maxEvents = 60 }: UseLates
   const apiKey = process.env.NEXT_PUBLIC_CODEX_API_KEY;
   const getTradeKey = useCallback((trade: CodexTrade) => {
     const timestamp = Number.isFinite(trade.timestamp) ? trade.timestamp : 0;
-    const maker = trade.makerAddress ?? '';
+    const maker = trade.makerAddress ?? "";
     return `${trade.id}:${timestamp}:${maker}`;
   }, []);
 
@@ -112,7 +123,7 @@ export const useLatestTrades = ({ address, networkId, maxEvents = 60 }: UseLates
   }, [address, networkId]);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return undefined;
+    if (typeof window === "undefined") return undefined;
     const interval = window.setInterval(() => {
       setClock(Date.now());
     }, 1000);
@@ -123,7 +134,7 @@ export const useLatestTrades = ({ address, networkId, maxEvents = 60 }: UseLates
   }, []);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return undefined;
+    if (typeof window === "undefined") return undefined;
     if (!address || !networkId) return undefined;
     if (!apiKey) return undefined;
 
@@ -145,7 +156,7 @@ export const useLatestTrades = ({ address, networkId, maxEvents = 60 }: UseLates
         }
       } catch (err) {
         if (!isCancelled) {
-          console.error('Failed to preload Codex trades', err);
+          console.error("Failed to preload Codex trades", err);
         }
       }
     };
@@ -158,11 +169,11 @@ export const useLatestTrades = ({ address, networkId, maxEvents = 60 }: UseLates
   }, [address, networkId, apiKey, maxEvents, handleIncomingEvents]);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return undefined;
+    if (typeof window === "undefined") return undefined;
     if (!address || !networkId) return undefined;
     if (!apiKey) {
-      setStatus('unauthorized');
-      setError('Missing NEXT_PUBLIC_CODEX_API_KEY');
+      setStatus("unauthorized");
+      setError("Missing NEXT_PUBLIC_CODEX_API_KEY");
       return undefined;
     }
 
@@ -187,7 +198,7 @@ export const useLatestTrades = ({ address, networkId, maxEvents = 60 }: UseLates
       unsubscribeRef.current = null;
       reconnectAttemptsRef.current += 1;
       const delay = Math.min(30_000, 1000 * 2 ** reconnectAttemptsRef.current);
-      setStatus('reconnecting');
+      setStatus("reconnecting");
       reconnectTimerRef.current = window.setTimeout(() => {
         startSubscription();
       }, delay);
@@ -195,7 +206,9 @@ export const useLatestTrades = ({ address, networkId, maxEvents = 60 }: UseLates
 
     const startSubscription = async () => {
       if (!isActive) return;
-      setStatus(reconnectAttemptsRef.current === 0 ? 'connecting' : 'reconnecting');
+      setStatus(
+        reconnectAttemptsRef.current === 0 ? "connecting" : "reconnecting",
+      );
       try {
         const unsubscribe = await subscribeToTokenEvents({
           sdk,
@@ -203,11 +216,11 @@ export const useLatestTrades = ({ address, networkId, maxEvents = 60 }: UseLates
           networkId,
           onEvents: handleIncomingEvents,
           onError: (message) => {
-            setStatus('error');
+            setStatus("error");
             setError(message);
             scheduleReconnect();
           },
-          variant: 'evm'
+          variant: "evm",
         });
         if (!isActive) {
           unsubscribe();
@@ -215,11 +228,14 @@ export const useLatestTrades = ({ address, networkId, maxEvents = 60 }: UseLates
         }
         unsubscribeRef.current = unsubscribe;
         reconnectAttemptsRef.current = 0;
-        setStatus('ready');
+        setStatus("ready");
         setError(null);
       } catch (err) {
-        const message = err instanceof Error ? err.message : 'Failed to start Codex subscription';
-        setStatus('error');
+        const message =
+          err instanceof Error
+            ? err.message
+            : "Failed to start Codex subscription";
+        setStatus("error");
         setError(message);
         scheduleReconnect();
       }

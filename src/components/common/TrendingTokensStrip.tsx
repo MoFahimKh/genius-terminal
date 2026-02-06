@@ -198,12 +198,12 @@ const ChainIcon = ({
           </span>
         </Tooltip.Trigger>
         <Tooltip.Portal>
-          <Tooltip.Content
-            className="z-50 rounded-md bg-gray-900 px-3 py-1.5 text-sm text-white shadow-md"
+        <Tooltip.Content
+            className="z-50 rounded-md bg-[#1D0035] px-3 py-2 text-xs text-white shadow-lg border border-white/10"
             sideOffset={5}
           >
             {meta.name}
-            <Tooltip.Arrow className="fill-gray-900" />
+            <Tooltip.Arrow className="fill-[#1D0035]" />
           </Tooltip.Content>
         </Tooltip.Portal>
       </Tooltip.Root>

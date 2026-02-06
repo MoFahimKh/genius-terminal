@@ -87,3 +87,8 @@ export const truncatePlatformName = (value: string) => {
   if (value.length <= 7) return value;
   return `${value.slice(0, 7)}…`;
 };
+export const toNumber = (value?: string | number | null) => {
+  if (value === null || value === undefined) return null;
+  const parsed = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+};

@@ -7,7 +7,7 @@ import {
 } from "@codex-data/sdk";
 
 import { getCodexClient } from "@/lib/codex/client";
-import toNumber from "@/lib/toNumber";
+import {toNumber} from "@/lib/format";
 import { FilterTokensResult, TrendingToken, UseTrendingTokensOptions, HookStatus } from "@/types";
 
 const mapToken = (
