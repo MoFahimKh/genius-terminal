@@ -27,11 +27,11 @@ export const TerminalView = () => {
   return (
     <div className="relative flex h-screen w-full flex-col overflow-y-auto text-white md:overflow-hidden">
       <TrendingTokensStrip />
-      <div className="flex h-full min-h-0 w-full flex-1 flex-col md:flex-row">
-        <div
-          className="flex h-full min-w-0 flex-1 flex-col overflow-y-auto md:overflow-hidden"
-        >
-          <TokenEventsProvider>
+      <TokenEventsProvider>
+        <div className="flex h-full min-h-0 w-full flex-1 flex-col md:flex-row">
+          <div
+            className="flex h-full min-w-0 flex-1 flex-col overflow-y-auto md:overflow-hidden"
+          >
             <div
               ref={containerRef}
               className="grid h-full w-full flex-1 min-w-0"
@@ -64,45 +64,45 @@ export const TerminalView = () => {
                 <TableSection />
               </div>
             </div>
-          </TokenEventsProvider>
-          {isDragging && (
-            <div className="fixed inset-0 z-[9999] cursor-row-resize bg-transparent" />
-          )}
-          {isMobile && (
-            <div className="border-t border-white/10 pb-4 pt-3">
-              <div className="flex justify-center">
-                <PanelCollapseToggle
-                  isCollapsed={isSidebarCollapsed}
-                  onClick={toggleSidebar}
-                />
-              </div>
-              {!isSidebarCollapsed && (
-                <div className="mt-3">
-                  <RightSidebar />
+            {isDragging && (
+              <div className="fixed inset-0 z-[9999] cursor-row-resize bg-transparent" />
+            )}
+            {isMobile && (
+              <div className="border-t border-white/10 pb-4 pt-3">
+                <div className="flex justify-center">
+                  <PanelCollapseToggle
+                    isCollapsed={isSidebarCollapsed}
+                    onClick={toggleSidebar}
+                  />
                 </div>
-              )}
-            </div>
+                {!isSidebarCollapsed && (
+                  <div className="mt-3">
+                    <RightSidebar />
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {!isMobile && (
+            <motion.div
+              className="hidden h-full overflow-hidden md:block"
+              initial={false}
+              animate={{
+                width: isSidebarCollapsed ? 0 : SIDEBAR_WIDTH,
+                opacity: isSidebarCollapsed ? 0 : 1,
+              }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              style={{ flexShrink: 0 }}
+              aria-hidden={isSidebarCollapsed}
+            >
+              <div className={isSidebarCollapsed ? "pointer-events-none" : ""}>
+                <RightSidebar />
+              </div>
+            </motion.div>
           )}
         </div>
-
-        {!isMobile && (
-          <motion.div
-            className="hidden h-full overflow-hidden md:block"
-            initial={false}
-            animate={{
-              width: isSidebarCollapsed ? 0 : SIDEBAR_WIDTH,
-              opacity: isSidebarCollapsed ? 0 : 1,
-            }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            style={{ flexShrink: 0 }}
-            aria-hidden={isSidebarCollapsed}
-          >
-            <div className={isSidebarCollapsed ? "pointer-events-none" : ""}>
-              <RightSidebar />
-            </div>
-          </motion.div>
-        )}
-      </div>
+      </TokenEventsProvider>
 
       {!isMobile && (
         <div

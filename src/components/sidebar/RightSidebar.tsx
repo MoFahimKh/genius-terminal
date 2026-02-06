@@ -1,47 +1,21 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import Image from 'next/image';
 import { Apple, Wallet } from 'lucide-react';
 import { Metric } from '@/types';
+import toast from 'react-hot-toast';
+
+import { formatPercentChange } from '@/components/common/TrendingTokensStrip';
+import { TokenBanner } from '@/components/sidebar/TokenBanner';
+import { useTokenStats } from '@/hooks/useTokenStats';
+import { formatCount, formatUsd } from '@/lib/format';
 
 const WELCOME_IMAGE = {
   src: '/assets/images/welcome.png',
   width: 688,
   height: 692,
 };
-
-
-const METRICS: Metric[] = [
-  {
-    label: '24H VOLUME',
-    primary: '$785.18K',
-    primaryTone: '#F8F4FF',
-    lineColor: '#4CE0FF',
-  },
-  {
-    label: 'BUYS',
-    primary: '1.2K',
-    secondary: '$380.55K',
-    primaryTone: '#34F5C6',
-    secondaryTone: '#34F5C6',
-    lineColor: '#2CCF9D',
-  },
-  {
-    label: 'SELLS',
-    primary: '1.1K',
-    secondary: '$404.62K',
-    primaryTone: '#FF7A8A',
-    secondaryTone: '#FF7A8A',
-    lineColor: '#FF5E73',
-  },
-  {
-    label: 'VOL. CHANGE',
-    primary: '+47421.00%',
-    primaryTone: '#66FF9B',
-    lineColor: '#47D97C',
-  },
-];
 
 type AuthButton = {
   label: string;
@@ -70,57 +44,143 @@ const BUTTONS: AuthButton[] = [
 const buttonBaseClasses =
   'flex w-[320px] items-center gap-3 rounded-sm bg-[#ffa4c8] px-5 py-3 text-sm text-[#1D0035]';
 
-export const RightSidebar = () => (
-  <aside className="invisible-scroll flex h-full min-h-0 flex-col overflow-y-auto border-l border-white/5">
-    <section className=" border border-white/10 p-2 h-[70px]">
-      <div className="grid grid-cols-4 gap-3">
-        {METRICS.map(
-          ({ label, primary, secondary, primaryTone, secondaryTone, lineColor }) => (
-            <div key={label} className="space-y-2 text-left">
-              <p className="text-[10px] uppercase text-white/60">
-                {label}
-              </p>
-              <div className="text-sm leading-tight" style={{ color: primaryTone }}>
-                {primary}
-                {secondary && (
-                  <>
-                    <span className="px-1 text-xs text-white/40">/</span>
-                    <span className="text-xs" style={{ color: secondaryTone ?? primaryTone }}>
-                      {secondary}
-                    </span>
-                  </>
-                )}
-              </div>
-              <div className="h-0.5 w-full rounded-full" style={{ backgroundColor: lineColor }} />
+export const RightSidebar = () => {
+  const { data } = useTokenStats();
+  const [isConnected, setIsConnected] = useState(false);
+
+  const formatUsdOrDash = (value: number | null) =>
+    value === null || Number.isNaN(value) ? '—' : formatUsd(value);
+
+  const volumeChangeTone = data.volumeChange24 !== null && data.volumeChange24 < 0 ? '#FF7A8A' : '#66FF9B';
+
+  const metrics: Metric[] = [
+    {
+      label: '24H VOLUME',
+      primary: formatUsdOrDash(data.volume24Usd),
+      primaryTone: '#F8F4FF',
+    },
+    {
+      label: 'BUYS',
+      primary: formatCount(data.buyCount24),
+      secondary: formatUsdOrDash(data.buyVolume24Usd),
+      primaryTone: '#34F5C6',
+      secondaryTone: '#34F5C6',
+    },
+    {
+      label: 'SELLS',
+      primary: formatCount(data.sellCount24),
+      secondary: formatUsdOrDash(data.sellVolume24Usd),
+      primaryTone: '#FF7A8A',
+      secondaryTone: '#FF7A8A',
+    },
+    {
+      label: 'VOL. CHANGE',
+      primary: formatPercentChange(data.volumeChange24),
+      primaryTone: volumeChangeTone,
+    },
+  ];
+
+  const handleConnect = () => {
+    if (isConnected) return;
+    setIsConnected(true);
+    toast.success('Connection successful!');
+  };
+
+  return (
+    <aside className="invisible-scroll flex h-full min-h-0 flex-col overflow-y-auto border-l border-white/5">
+      <section className="border border-white/10 border-l-0 px-4 py-2.5">
+        <div className="flex items-start justify-between gap-6">
+          <div className="flex min-w-0 flex-1 items-start gap-4">
+            {metrics.slice(0, 2).map(
+              ({ label, primary, secondary, primaryTone, secondaryTone }) => (
+                <div key={label} className="min-w-0 flex-1 space-y-1 text-left">
+                  <p className="text-[10px] uppercase text-[#eee0ff80]">{label}</p>
+                <div
+                    className="truncate text-[12px] leading-tight text-white"
+                    style={{ color: primaryTone }}
+                    title={secondary ? `${primary} / ${secondary}` : primary}
+                  >
+                    {primary}
+                    {secondary && (
+                      <>
+                        <span className="px-1 text-[12px] text-white/40">/</span>
+                        <span className="text-[12px]" style={{ color: secondaryTone ?? primaryTone }}>
+                          {secondary}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              ),
+            )}
+          </div>
+          <div className="flex min-w-0 flex-1 items-start gap-4">
+            {metrics.slice(2).map(
+              ({ label, primary, secondary, primaryTone, secondaryTone }) => (
+                <div key={label} className="min-w-0 flex-1 space-y-1 text-left">
+                  <p className="text-[10px] uppercase text-[#eee0ff80]">{label}</p>
+                <div
+                    className="truncate text-[12px] leading-tight text-white"
+                    style={{ color: primaryTone }}
+                    title={secondary ? `${primary} / ${secondary}` : primary}
+                  >
+                    {primary}
+                    {secondary && (
+                      <>
+                        <span className="px-1 text-[12px] text-white/40">/</span>
+                        <span className="text-[12px]" style={{ color: secondaryTone ?? primaryTone }}>
+                          {secondary}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              ),
+            )}
+          </div>
+        </div>
+        <div className="mt-3 grid grid-cols-2 gap-6">
+          <div className="h-[3px] w-full rounded-full bg-[#34F5C6]" />
+          <div className="h-[3px] w-full rounded-full bg-[#34F5C6]" />
+        </div>
+      </section>
+
+      <div style={{alignItems:"center"}} className="flex flex-1 flex-col overflow-y-auto text-center align-middle">
+        {!isConnected && (
+          <>
+            <div  className="flex flex-col items-center">
+              <Image
+                src={WELCOME_IMAGE.src}
+                alt="Welcome to Genius Terminal"
+                width={WELCOME_IMAGE.width}
+                height={WELCOME_IMAGE.height}
+                className="w-full"
+                priority
+              />
             </div>
-          ),
+
+            <div className="mt-6 flex flex-col gap-3">
+              {BUTTONS.map(({ label, icon }) => (
+                <button key={label} className={buttonBaseClasses} type="button" onClick={handleConnect}>
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xs">
+                    {icon}
+                  </span>
+                  <span className="flex-1 text-left">{label}</span>
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+
+        {isConnected && (
+          <TokenBanner
+            name={data.snapshot?.name ?? null}
+            symbol={data.snapshot?.symbol ?? null}
+            imageUrl={data.snapshot?.imageUrl ?? null}
+          />
         )}
       </div>
-    </section>
 
-    <div className="flex flex-1 flex-col overflow-y-auto text-center align-middle">
-      <div className="flex flex-col items-center">
-        <Image
-          src={WELCOME_IMAGE.src}
-          alt="Welcome to Genius Terminal"
-          width={WELCOME_IMAGE.width}
-          height={WELCOME_IMAGE.height}
-          className="w-full"
-          priority
-        />
-        
-      </div>
-
-      <div className="mt-6 flex flex-col gap-3">
-        {BUTTONS.map(({ label, icon }) => (
-          <button key={label} className={buttonBaseClasses} type="button">
-            <span className="flex h-11 w-11 items-center justify-center rounded-xs">
-              {icon}
-            </span>
-            <span className="flex-1 text-left">{label}</span>
-          </button>
-        ))}
-      </div>
-    </div>
-  </aside>
-);
+    </aside>
+  );
+};

@@ -66,3 +66,30 @@ export const formatTimeAgo = (timestamp: number) => {
   }
   return "0s";
 };
+
+const compactNumberFormatter = new Intl.NumberFormat("en-US", {
+  notation: "compact",
+  maximumFractionDigits: 2,
+});
+
+export const formatCount = (value: number | null) => {
+  if (value === null || Number.isNaN(value)) return "—";
+  if (value < 1_000) return value.toLocaleString();
+  return compactNumberFormatter.format(value);
+};
+
+export const formatAge = (ageMs: number | null) => {
+  if (!ageMs || Number.isNaN(ageMs)) return "—";
+  const totalMinutes = Math.floor(ageMs / 60_000);
+  const days = Math.floor(totalMinutes / (60 * 24));
+  const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+  const minutes = totalMinutes % 60;
+  if (days > 0) return `${days}d, ${hours}h`;
+  if (hours > 0) return `${hours}h, ${minutes}m`;
+  return `${Math.max(minutes, 0)}m`;
+};
+
+export const truncatePlatformName = (value: string) => {
+  if (value.length <= 7) return value;
+  return `${value.slice(0, 7)}…`;
+};

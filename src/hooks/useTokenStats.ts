@@ -33,6 +33,11 @@ type TokenSnapshot = {
   priceUsd: number | null;
   change24: number | null;
   volume24Usd: number | null;
+  buyCount24: number | null;
+  sellCount24: number | null;
+  buyVolume24Usd: number | null;
+  sellVolume24Usd: number | null;
+  volumeChange24: number | null;
   marketCapUsd: number | null;
   liquidityUsd: number | null;
   holders: number | null;
@@ -57,6 +62,11 @@ const mapTokenSnapshot = (result: FilterTokensResult): TokenSnapshot => {
     priceUsd: toNumber(result.priceUSD),
     change24: toNumber(result.change24 ?? result.change12 ?? result.change4 ?? result.change1),
     volume24Usd: toNumber(result.volume24 ?? result.volume12 ?? result.volume4 ?? result.volume1),
+    buyCount24: toNumber(result.buyCount24 ?? result.buyCount12 ?? result.buyCount4 ?? result.buyCount1),
+    sellCount24: toNumber(result.sellCount24 ?? result.sellCount12 ?? result.sellCount4 ?? result.sellCount1),
+    buyVolume24Usd: toNumber(result.buyVolume24 ?? result.buyVolume12 ?? result.buyVolume4 ?? result.buyVolume1),
+    sellVolume24Usd: toNumber(result.sellVolume24 ?? result.sellVolume12 ?? result.sellVolume4 ?? result.sellVolume1),
+    volumeChange24: toNumber(result.volumeChange24 ?? result.volumeChange12 ?? result.volumeChange4 ?? result.volumeChange1),
     marketCapUsd: toNumber(result.marketCap ?? result.circulatingMarketCap),
     liquidityUsd: toNumber(result.liquidity ?? result.liquidPairLiquidity),
     holders: toNumber(result.holders),
@@ -79,6 +89,11 @@ export type TokenStatsData = {
   priceUsd: number | null;
   change24: number | null;
   volume24Usd: number | null;
+  buyCount24: number | null;
+  sellCount24: number | null;
+  buyVolume24Usd: number | null;
+  sellVolume24Usd: number | null;
+  volumeChange24: number | null;
   marketCapUsd: number | null;
   liquidityUsd: number | null;
   holders: number | null;
@@ -197,6 +212,11 @@ export const useTokenStats = ({
     priceUsd,
     change24: snapshot?.change24 ?? null,
     volume24Usd: snapshot?.volume24Usd ?? null,
+    buyCount24: snapshot?.buyCount24 ?? null,
+    sellCount24: snapshot?.sellCount24 ?? null,
+    buyVolume24Usd: snapshot?.buyVolume24Usd ?? null,
+    sellVolume24Usd: snapshot?.sellVolume24Usd ?? null,
+    volumeChange24: snapshot?.volumeChange24 ?? null,
     marketCapUsd: snapshot?.marketCapUsd ?? null,
     liquidityUsd: snapshot?.liquidityUsd ?? null,
     holders: snapshot?.holders ?? null,

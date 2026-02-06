@@ -96,7 +96,7 @@ export type Metric = {
   secondary?: string;
   primaryTone: string;
   secondaryTone?: string;
-  lineColor: string;
+  lineColor?: string;
 };
 
 export type SubscriptionVariant = 'evm' | 'sol';
