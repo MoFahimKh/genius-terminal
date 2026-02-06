@@ -27,7 +27,6 @@ const STATUS_STYLES =
 
 export const LiveTradesTable = () => {
   const { trades, status, error, networkId } = useTokenEvents();
-
   const maxUsd = useMemo(() => trades.reduce((acc, trade) => Math.max(acc, trade.amountUsd ?? 0), 0), [trades]);
 
   if (status === 'unauthorized') {
@@ -57,40 +56,43 @@ export const LiveTradesTable = () => {
         <tbody className="text-[13px]">
           {isLoading &&
             placeholderRows.map((_, idx) => (
-              <tr key={`placeholder-${idx}`} className="animate-pulse border-b border-white/5">
+                <tr key={`placeholder-${idx}`} className="animate-pulse">
                 <td className="p-2 text-white/20">—</td>
-                <td className="px-4 py-3 text-white/20">—</td>
-                <td className="px-4 py-3 text-white/20">—</td>
-                <td className="px-4 py-3 text-white/20">—</td>
-                <td className="px-4 py-3 text-white/20">—</td>
-                <td className="px-4 py-3 text-white/20">—</td>
+                <td className="px-4  text-white/20">—</td>
+                <td className="px-4  text-white/20">—</td>
+                <td className="px-4 text-white/20">—</td>
+                <td className="px-4 text-white/20">—</td>
+                <td className="px-4 text-white/20">—</td>
               </tr>
             ))}
           {!isLoading &&
             trades.map((trade) => {
-              const usdFraction = maxUsd ? Math.max(0.1, Math.min(1, trade.amountUsd / maxUsd)) : 0;
+              const usdFraction = maxUsd ? Math.min(1, trade.amountUsd / maxUsd) : 0;
               const explorerLink = buildExplorerLink(trade.makerAddress, networkId);
               const rowKey = `${trade.id}-${trade.timestamp}-${trade.makerAddress ?? 'unknown'}`;
+              const accent = trade.side === 'sell' ? '#F87272' : '#36D399';
+              const barWidth = `${Math.max(0.08, usdFraction) * 100}%`;
               return (
-                <tr key={rowKey} className="border-b border-white/5 transition-colors duration-200 hover:bg-row-hover cursor-pointer">
-                  <td className="px-4 py-3 text-white/80">{formatTimeAgo(trade.timestamp)}</td>
-                  <td className={`px-4 py-3 font-semibold ${trade.side === 'sell' ? 'text-[#F87272]' : 'text-[#36D399]'}`}>
+                <tr key={rowKey} className="transition-colors duration-200 hover:bg-row-hover cursor-pointer">
+                  <td className="px-4  text-white/80">{formatTimeAgo(trade.timestamp)}</td>
+                  <td className={`px-4  font-semibold ${trade.side === 'sell' ? 'text-[#F87272]' : 'text-[#36D399]'}`}>
                     {trade.side === 'sell' ? 'Sell' : 'Buy'}
                   </td>
-                  <td className="px-4 py-3">{trade.priceUsd ? formatUsd(trade.priceUsd) : '—'}</td>
-                  <td className="px-4 py-3">{formatTokenAmount(trade.amountToken)}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      <span className={trade.side === 'sell' ? 'text-[#F87272]' : 'text-[#36D399]'}>{formatUsd(trade.amountUsd)}</span>
-                      <span
-                        className="h-3 flex-1 rounded-full bg-gradient-to-r from-white/5"
+                  <td className="px-4 ">{trade.priceUsd ? formatUsd(trade.priceUsd) : '—'}</td>
+                  <td className="px-4 ">{formatTokenAmount(trade.amountToken)}</td>
+                  <td className="px-4 ">
+                    <div className="relative h-8 overflow-hidden">
+                      <div
+                        className="absolute inset-y-0 left-0"
                         style={{
-                          background: `linear-gradient(90deg, ${
-                            trade.side === 'sell' ? '#F87272' : '#36D399'
-                          }33 ${usdFraction * 100}%, transparent ${usdFraction * 100}%)`,
+                          width: barWidth,
+                          background: `linear-gradient(90deg, ${accent}00 0%, ${accent}66 100%)`,
                         }}
                         aria-hidden
                       />
+                      <span className="relative z-10 flex h-full items-center px-2 font-semibold" style={{ color: accent }}>
+                        {formatUsd(trade.amountUsd)}
+                      </span>
                     </div>
                   </td>
                   <td className="px-4 py-3">

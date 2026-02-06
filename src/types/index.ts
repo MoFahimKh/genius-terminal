@@ -110,6 +110,11 @@ export type GraphqlTokenEvent = {
   amount0?: string | number | null;
   amount1?: string | number | null;
   amountUSD?: string | number | null;
+  amountNonLiquidityToken?: string | number | null;
+  priceUsd?: string | number | null;
+  priceUsdTotal?: string | number | null;
+  token0SwapValueUsd?: string | number | null;
+  token1SwapValueUsd?: string | number | null;
   raw?: Record<string, unknown> | null;
 };
 

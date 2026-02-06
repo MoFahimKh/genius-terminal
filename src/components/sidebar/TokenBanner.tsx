@@ -20,7 +20,7 @@ export const TokenBanner = ({ name, symbol, imageUrl }: TokenBannerProps) => {
       <button
         type="button"
         onClick={() => setCollapsed((prev) => !prev)}
-        className="flex w-full items-center justify-between border-y border-white/10 px-2 py-2 text-sm font-medium text-white/80"
+        className="flex w-full items-center gap-2 px-2 py-2 text-sm font-medium text-white/80"
         aria-expanded={!collapsed}
       >
         <span>{headerLabel}</span>

@@ -23,18 +23,50 @@ const toTimestampMs = (value?: string | number | null) => {
 
 const normalizeEvent = (event: GraphqlTokenEvent): CodexTrade | null => {
   if (!event.id) return null;
-  const tokenAmount = toNumber(event.amount0) ?? toNumber(event.amount1) ?? 0;
-  const amountUsd = toNumber(event.amountUSD) ?? 0;
-  const priceUsd = tokenAmount && amountUsd ? amountUsd / tokenAmount : null;
+
+  const displayType = event.eventDisplayType?.toLowerCase() ?? "";
+  if (displayType !== "buy" && displayType !== "sell") {
+    return null;
+  }
+
+  const amountNonLiquidityToken = toNumber(event.amountNonLiquidityToken);
+  const amount0 = toNumber(event.amount0);
+  const amount1 = toNumber(event.amount1);
+  const priceUsd = toNumber(event.priceUsd);
+  const priceUsdTotal = toNumber(event.priceUsdTotal);
+  const amountUsdFromEvent = toNumber(event.amountUSD);
+  const token0SwapValueUsd = toNumber(event.token0SwapValueUsd);
+  const token1SwapValueUsd = toNumber(event.token1SwapValueUsd);
+
+  let amountToken = amountNonLiquidityToken ?? amount0 ?? amount1 ?? 0;
+  let amountUsd: number | null = priceUsdTotal ?? amountUsdFromEvent ?? null;
+
+  if (amountUsd === null) {
+    if (amountNonLiquidityToken !== null && priceUsd !== null) {
+      amountUsd = amountNonLiquidityToken * priceUsd;
+    } else if (amount0 !== null && token0SwapValueUsd !== null) {
+      amountToken = amount0;
+      amountUsd = token0SwapValueUsd;
+    } else if (amount1 !== null && token1SwapValueUsd !== null) {
+      amountToken = amount1;
+      amountUsd = token1SwapValueUsd;
+    }
+  }
+
+  const resolvedAmountUsd = amountUsd ?? 0;
+  let resolvedPriceUsd = priceUsd ?? null;
+  if (resolvedPriceUsd === null && amountToken && resolvedAmountUsd) {
+    resolvedPriceUsd = resolvedAmountUsd / amountToken;
+  }
 
   return {
     id: event.id,
     timestamp: toTimestampMs(event.timestamp),
     makerAddress: event.makerAddress ?? null,
-    side: event.eventDisplayType?.toLowerCase() === 'sell' ? 'sell' : 'buy',
-    amountToken: tokenAmount,
-    amountUsd,
-    priceUsd,
+    side: displayType === "sell" ? "sell" : "buy",
+    amountToken,
+    amountUsd: resolvedAmountUsd,
+    priceUsd: resolvedPriceUsd,
   };
 };
 
@@ -108,7 +140,6 @@ export const useLatestTrades = ({ address, networkId, maxEvents = 60 }: UseLates
           networkId,
           limit: maxEvents,
         });
-        console.log({recent})
         if (!isCancelled && recent.length) {
           handleIncomingEvents(recent);
         }

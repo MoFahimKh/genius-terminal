@@ -145,10 +145,10 @@ export const RightSidebar = () => {
         </div>
       </section>
 
-      <div style={{alignItems:"center"}} className="flex flex-1 flex-col overflow-y-auto text-center align-middle">
+      <div style={{alignItems:"center"}} className="flex flex-1 flex-col overflow-y-auto text-center align-middle ">
         {!isConnected && (
-          <>
-            <div  className="flex flex-col items-center">
+          <div className=' border-b-2'>
+            <div  className="flex flex-col items-center ">
               <Image
                 src={WELCOME_IMAGE.src}
                 alt="Welcome to Genius Terminal"
@@ -162,23 +162,20 @@ export const RightSidebar = () => {
             <div className="mt-6 flex flex-col gap-3">
               {BUTTONS.map(({ label, icon }) => (
                 <button key={label} className={buttonBaseClasses} type="button" onClick={handleConnect}>
-                  <span className="flex h-11 w-11 items-center justify-center rounded-xs">
+                  <span className="flex h-11 w-11 items-center  justify-center rounded-xs">
                     {icon}
                   </span>
                   <span className="flex-1 text-left">{label}</span>
                 </button>
               ))}
             </div>
-          </>
+          </div>
         )}
-
-        {isConnected && (
           <TokenBanner
             name={data.snapshot?.name ?? null}
             symbol={data.snapshot?.symbol ?? null}
             imageUrl={data.snapshot?.imageUrl ?? null}
           />
-        )}
       </div>
 
     </aside>
