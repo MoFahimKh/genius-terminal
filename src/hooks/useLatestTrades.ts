@@ -197,7 +197,7 @@ export const useLatestTrades = ({ address, networkId, maxEvents = 60 }: UseLates
             setError(message);
             scheduleReconnect();
           },
-          // variant: 'evm'
+          variant: 'evm'
         });
         if (!isActive) {
           unsubscribe();
