@@ -51,7 +51,7 @@ const TokenChip = ({
 }: TokenChipProps) => {
   const isPositive = (change ?? 0) >= 0;
   return (
-    <div className="flex h-7 min-w-[168px] flex-shrink-0 items-center gap-3 px-1.5 text-xs text-white hover:bg-[#231646] rounded-sm">
+    <div className="cursor-pointer flex h-7 min-w-[168px] flex-shrink-0 items-center gap-3 px-1.5 text-xs text-white hover:bg-[#231646] rounded-sm">
       {imageUrl ? (
         <img
           src={imageUrl}
@@ -94,7 +94,7 @@ export const TrendingTokensStrip = () => {
       [
         collapsed
           ? "max-h-0 py-0 opacity-0 pointer-events-none"
-          : "max-h-[520px] py-[10px] opacity-100",
+          : "max-h-[520px] opacity-100 px-5",
       ].join(" "),
     [collapsed],
   );

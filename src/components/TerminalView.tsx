@@ -93,7 +93,7 @@ export const TerminalView = () => {
         </div>
 
         {!isMobile && !isSidebarCollapsed && (
-          <div className="ml-auto hidden h-full w-[18rem] flex-shrink-0 overflow-hidden md:block">
+          <div className="ml-auto hidden h-full w-64 flex-shrink-0 overflow-hidden md:block">
             <RightSidebar />
           </div>
         )}

@@ -44,21 +44,21 @@ export const LiveTradesTable = () => {
   return (
     <div className="invisible-scroll min-h-0 flex-1 overflow-y-auto">
       <table className="w-full min-w-[640px] table-fixed text-sm text-white">
-        <thead className="text-[11px] uppercase text-muted">
-          <tr className="border-b border-white/10">
-            <th className="px-4 py-2 text-left">Age</th>
-            <th className="px-4 py-2 text-left">Type</th>
-            <th className="px-4 py-2 text-left">Price</th>
-            <th className="px-4 py-2 text-left">Amount</th>
-            <th className="px-4 py-2 text-left">Total USD</th>
-            <th className="px-4 py-2 text-left">Trader</th>
+        <thead className="text-sm text-[#eee0ff99] bg-row-hover [&_th]:font-medium">
+          <tr className="">
+            <th className="px-3 py-2 text-left">Age</th>
+            <th className="p-2 text-left">Type</th>
+            <th className="p-2 text-left">Price</th>
+            <th className="p-2 text-left">Amount</th>
+            <th className="p-2 text-left">Total USD</th>
+            <th className="p-2 text-left">Trader</th>
           </tr>
         </thead>
         <tbody className="text-[13px]">
           {isLoading &&
             placeholderRows.map((_, idx) => (
               <tr key={`placeholder-${idx}`} className="animate-pulse border-b border-white/5">
-                <td className="px-4 py-3 text-white/20">—</td>
+                <td className="p-2 text-white/20">—</td>
                 <td className="px-4 py-3 text-white/20">—</td>
                 <td className="px-4 py-3 text-white/20">—</td>
                 <td className="px-4 py-3 text-white/20">—</td>
@@ -72,7 +72,7 @@ export const LiveTradesTable = () => {
               const explorerLink = buildExplorerLink(trade.makerAddress, networkId);
               const rowKey = `${trade.id}-${trade.timestamp}-${trade.makerAddress ?? 'unknown'}`;
               return (
-                <tr key={rowKey} className="border-b border-white/5 transition-colors duration-200 hover:bg-row-hover">
+                <tr key={rowKey} className="border-b border-white/5 transition-colors duration-200 hover:bg-row-hover cursor-pointer">
                   <td className="px-4 py-3 text-white/80">{formatTimeAgo(trade.timestamp)}</td>
                   <td className={`px-4 py-3 font-semibold ${trade.side === 'sell' ? 'text-[#F87272]' : 'text-[#36D399]'}`}>
                     {trade.side === 'sell' ? 'Sell' : 'Buy'}
