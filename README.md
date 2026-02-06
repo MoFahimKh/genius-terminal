@@ -1,11 +1,6 @@
 # Genius Terminal - Asset Page Recreation
 
-A Next.js application that reproduces the asset page functionality from TradeGenius, featuring real-time token data, live t## 🚧 Known Limitations
-
-- Chart component is a placeholder (can be replaced with a charting library like Chart.js or Recharts)
-- Holders data requires Codex Premium API access (not included in free tier)
-- Search functionality in tables is under active development
-- **Mobile view is in progress** — Due to time constraints, the mobile responsiveness is not fully optimized yet. Desktop experience is fully functionalg events, and liquidity pool information using Codex API.
+A Next.js application that reproduces the asset page functionality from TradeGenius, featuring real-time token data.
 
 ---
 
@@ -19,7 +14,7 @@ A Next.js application that reproduces the asset page functionality from TradeGen
 
 1. **Clone the repository**
    ```bash
-   git clone <repo-url>
+   git clone https://github.com/MoFahimKh/genius-terminal.git
    cd genius-terminal
    ```
 
@@ -90,29 +85,64 @@ A Next.js application that reproduces the asset page functionality from TradeGen
 
 ```
 src/
-├── app/                    # Next.js app router & pages
-├── components/             # Reusable React components
-│   ├── Chart.tsx          # Chart placeholder
-│   ├── TerminalView.tsx   # Main asset page
-│   ├── common/            # UI components (toggles, icons, mobile nav, etc.)
-│   ├── sidebar/           # Token stats & trending tokens
-│   ├── stats/             # Token statistics display
-│   └── tables/            # Live trades & pools tables
-├── hooks/                 # Custom React hooks
-│   ├── useLatestTrades.ts # Fetch live trade events
-│   ├── useTokenPools.ts   # Fetch liquidity pools
-│   ├── useTokenStats.ts   # Fetch token statistics
-│   └── useTokenHolders.ts # Holders data (pending premium access)
-├── lib/                   # Utilities & API clients
-│   ├── codex/            # Codex SDK integration & socket handlers
-│   ├── chains.ts         # Blockchain network configs
-│   ├── format.ts         # Data formatting utilities
-│   └── toNumber.ts       # Number conversion helpers
-├── context/              # React Context for state management
-│   └── TokenEventsContext.tsx # Token event broadcasting
-├── types/                # TypeScript type definitions
-├── config/               # Configuration files
-└── mock/                 # Mock data for development
+├── app/                           # Next.js App Router pages
+│   ├── layout.tsx                # Root layout wrapper
+│   ├── page.tsx                  # Home page entry point
+│   ├── not-found.tsx             # 404 fallback page
+│   ├── globals.css               # Global styles
+│   ├── (routes)/                 # Route group (empty)
+│   └── assets/
+│       └── page.tsx              # Asset/token page (/assets?address=...)
+│
+├── components/                    # Reusable React components
+│   ├── Chart.tsx                 # Chart placeholder component
+│   ├── TerminalView.tsx          # Main asset terminal layout wrapper
+│   ├── common/                   # Shared UI components
+│   │   ├── CollapseToggle.tsx    # Toggle button for collapse/expand
+│   │   ├── DragHandle.tsx        # Draggable handle component
+│   │   ├── TerminalMobileNav.tsx # Mobile navigation menu
+│   │   ├── ToastProvider.tsx     # Toast notification provider
+│   │   ├── TokenIcon.tsx         # Token logo/icon display
+│   │   └── TrendingTokensStrip.tsx # Horizontally scrollable trending tokens
+│   ├── sidebar/                  # Right sidebar components
+│   │   ├── RightSidebar.tsx      # Token stats sidebar container
+│   │   └── TokenBanner.tsx       # Token header banner
+│   ├── stats/                    # Token statistics display
+│   │   └── TokenStats.tsx        # Comprehensive token info display
+│   └── tables/                   # Data tables
+│       ├── LiveTradesTable.tsx   # Real-time transactions table
+│       ├── PoolsTable.tsx        # Liquidity pools table
+│       └── TableSection.tsx      # Table wrapper/container
+│
+├── hooks/                        # Custom React hooks
+│   ├── useIsMobile.ts            # Mobile viewport detection
+│   ├── useLatestTrades.ts        # Fetch & stream live trade events
+│   ├── useTokenPools.ts          # Fetch & stream pool metadata updates
+│   ├── useTokenStats.ts          # Fetch token statistics
+│   ├── useTokenHolders.ts        # Token holders data (requires premium API)
+│   ├── useTrendingTokens.ts      # Fetch trending tokens list
+│   └── useVerticalSplit.tsx      # Manage sidebar collapse state
+│
+├── lib/                          # Utilities & API clients
+│   ├── codex/                    # Codex SDK integration
+│   │   ├── client.ts             # Codex SDK instance setup
+│   │   ├── tokenEvents.ts        # Socket handlers for token events
+│   │   └── tokenEventUtils.ts    # Utility functions for event processing
+│   ├── chains.ts                 # Blockchain network configurations
+│   ├── format.ts                 # Data formatting utilities (prices, dates, etc.)
+│   └── toNumber.ts               # Safe number parsing & conversion
+│
+├── context/                      # React Context providers
+│   └── TokenEventsContext.tsx    # Global token events context & broadcast
+│
+├── types/                        # TypeScript type definitions
+│   └── index.ts                  # Type exports (Token, Pool, Trade, etc.)
+│
+├── config/                       # App configuration
+│   └── market.ts                 # Market-related constants & configs
+│
+└── mock/                         # Mock data for development/testing
+    └── data.ts                   # Sample token & market data
 
 ```
 
@@ -175,6 +205,7 @@ pnpm format    # Format code with Prettier
 - Holders data requires Codex Premium API access (not included in free tier)
 - Search functionality in tables is under active development
 - **Chain support note**: The current implementation is focused on BNB Chain. Solana support is possible, but was not completed due to time constraints.
+- **Mobile view is in progress** —The mobile responsiveness is not fully optimized yet. Desktop experience is fully functionalg events, and liquidity pool information using Codex API.
 
 ---
 
