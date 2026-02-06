@@ -206,7 +206,7 @@ pnpm format    # Format code with Prettier
 - Search functionality in tables is under active development
 - **Chain support note**: The current implementation is focused on BNB Chain. Solana support is possible, but was not completed due to time constraints.
 - **Mobile view is in progress** —The mobile responsiveness is not fully optimized yet. Desktop experience is fully functionalg events, and liquidity pool information using Codex API.
-
+- **Auth login buttons are in progress** — In future would add auth for google, apple and wallet or all simultaneously with Privy.
 ---
 
 ## 📄 Assessment Details
