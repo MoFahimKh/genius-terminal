@@ -126,8 +126,8 @@ export const TableSection = () => {
             <button
               key={item}
               className={twMerge(
-                'rounded-default mx-2 flex-shrink-0 border-none px-3 py-1.5 text-xs font-semibold uppercase transition-all duration-200',
-                selectedFilter === item ? 'bg-[#022D9299] text-white' : 'text-muted',
+                'rounded-sm flex-shrink-0 border-none px-2 py-0.5 text-xs font-medium transition-all duration-200',
+                selectedFilter === item ? 'bg-[#231646] text-[#eee0ff]' : 'text-[#eee0ff99]',
               )}
               onClick={() => setSelectedFilter(item)}>
               {item}

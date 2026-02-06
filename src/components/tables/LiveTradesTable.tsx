@@ -74,19 +74,19 @@ export const LiveTradesTable = () => {
               return (
                 <tr key={rowKey} className="border-b border-white/5 transition-colors duration-200 hover:bg-row-hover">
                   <td className="px-4 py-3 text-white/80">{formatTimeAgo(trade.timestamp)}</td>
-                  <td className={`px-4 py-3 font-semibold ${trade.side === 'sell' ? 'text-[#FF6B6B]' : 'text-[#00FF26]'}`}>
+                  <td className={`px-4 py-3 font-semibold ${trade.side === 'sell' ? 'text-[#F87272]' : 'text-[#36D399]'}`}>
                     {trade.side === 'sell' ? 'Sell' : 'Buy'}
                   </td>
                   <td className="px-4 py-3">{trade.priceUsd ? formatUsd(trade.priceUsd) : '—'}</td>
                   <td className="px-4 py-3">{formatTokenAmount(trade.amountToken)}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <span className={trade.side === 'sell' ? 'text-[#FF6B6B]' : 'text-[#00FF26]'}>{formatUsd(trade.amountUsd)}</span>
+                      <span className={trade.side === 'sell' ? 'text-[#F87272]' : 'text-[#36D399]'}>{formatUsd(trade.amountUsd)}</span>
                       <span
                         className="h-3 flex-1 rounded-full bg-gradient-to-r from-white/5"
                         style={{
                           background: `linear-gradient(90deg, ${
-                            trade.side === 'sell' ? '#FF6B6B' : '#00FF26'
+                            trade.side === 'sell' ? '#F87272' : '#36D399'
                           }33 ${usdFraction * 100}%, transparent ${usdFraction * 100}%)`,
                         }}
                         aria-hidden

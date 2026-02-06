@@ -1,11 +1,12 @@
 "use client";
 
 import clsx from "clsx";
-import { type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 
 import { TokenIcon } from "@/components/common/TokenIcon";
 import { useTrendingTokens } from "@/hooks/useTrendingTokens";
 import { formatUsd } from "@/lib/format";
+import { CollapseToggle } from "./CollapseToggle";
 
 const PLACEHOLDER_ITEMS = Array.from({ length: 7 });
 
@@ -50,7 +51,7 @@ const TokenChip = ({
 }: TokenChipProps) => {
   const isPositive = (change ?? 0) >= 0;
   return (
-    <div className="flex h-7 min-w-[168px] flex-shrink-0 items-center gap-3 px-1.5 text-xs text-white">
+    <div className="flex h-7 min-w-[168px] flex-shrink-0 items-center gap-3 px-1.5 text-xs text-white hover:bg-[#231646] rounded-sm">
       {imageUrl ? (
         <img
           src={imageUrl}
@@ -67,7 +68,9 @@ const TokenChip = ({
         {symbol}
       </span>
 
-      <span className="text-[14px] font-semibold text-[#eee0ff80]">{formatUsd(price)}</span>
+      <span className="text-[14px] font-semibold text-[#eee0ff80]">
+        {formatUsd(price)}
+      </span>
       <span
         className={clsx(
           "ml-auto text-[11px] font-semibold rounded-sm px-1",
@@ -83,46 +86,63 @@ const TokenChip = ({
 };
 
 export const TrendingTokensStrip = () => {
+  const [collapsed, setCollapsed] = useState(false);
   const { tokens, status, error } = useTrendingTokens();
   const isLoading = status === "idle" || status === "loading";
-  console.log(tokens);
+  const infoClass = useMemo(
+    () =>
+      [
+        collapsed
+          ? "max-h-0 py-0 opacity-0 pointer-events-none"
+          : "max-h-[520px] py-[10px] opacity-100",
+      ].join(" "),
+    [collapsed],
+  );
   return (
     <div className="flex w-full flex-shrink-0">
-      <div className="no-scrollbar flex h-11 w-full items-center gap-3 overflow-x-auto px-4 py-1">
-        {status === "unauthorized" && (
-          <StripMessage>
-            Connect NEXT_PUBLIC_CODEX_API_KEY to unlock trending tokens.
-          </StripMessage>
-        )}
-        {status === "error" && (
-          <StripMessage>
-            {error ?? "Unable to load trending tokens."}
-          </StripMessage>
-        )}
-        {status !== "unauthorized" && status !== "error" && (
-          <>
-            {isLoading && tokens.length === 0
-              ? PLACEHOLDER_ITEMS.map((_, idx) => (
-                  <PlaceholderChip key={`placeholder-${idx}`} />
-                ))
-              : null}
-            {!isLoading && tokens.length === 0 ? (
-              <StripMessage>
-                No trending tokens available right now.
-              </StripMessage>
-            ) : null}
-            {tokens.map((token) => (
-              <TokenChip
-                key={token.id}
-                symbol={token.symbol}
-                name={token.name}
-                price={token.priceUsd}
-                change={token.change24}
-                imageUrl={token.imageUrl}
-              />
-            ))}
-          </>
-        )}
+      <div className="relative">
+        <div className={infoClass} aria-hidden={collapsed}>
+        <div className="no-scrollbar flex h-11 w-full items-center gap-3 overflow-x-auto px-4 py-1">
+          {status === "unauthorized" && (
+            <StripMessage>
+              Connect NEXT_PUBLIC_CODEX_API_KEY to unlock trending tokens.
+            </StripMessage>
+          )}
+          {status === "error" && (
+            <StripMessage>
+              {error ?? "Unable to load trending tokens."}
+            </StripMessage>
+          )}
+          {status !== "unauthorized" && status !== "error" && (
+            <>
+              {isLoading && tokens.length === 0
+                ? PLACEHOLDER_ITEMS.map((_, idx) => (
+                    <PlaceholderChip key={`placeholder-${idx}`} />
+                  ))
+                : null}
+              {!isLoading && tokens.length === 0 ? (
+                <StripMessage>
+                  No trending tokens available right now.
+                </StripMessage>
+              ) : null}
+              {tokens.map((token) => (
+                <TokenChip
+                  key={token.id}
+                  symbol={token.symbol}
+                  name={token.name}
+                  price={token.priceUsd}
+                  change={token.change24}
+                  imageUrl={token.imageUrl}
+                />
+              ))}
+            </>
+          )}
+        </div>
+      </div>
+      <CollapseToggle
+          isCollapsed={collapsed}
+          onClick={() => setCollapsed((p) => !p)}
+        />
       </div>
     </div>
   );
