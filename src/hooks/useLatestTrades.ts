@@ -3,9 +3,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { getCodexClient } from '@/lib/codex/client';
-import { fetchRecentTokenEvents, subscribeToTokenEvents, type GraphqlTokenEvent } from '@/lib/codex/tokenEvents';
+import { fetchRecentTokenEvents, subscribeToTokenEvents } from '@/lib/codex/tokenEvents';
 import toNumber from '@/lib/toNumber';
-import { CodexTrade, UseLatestTradesOptions, ConnectionState } from '@/types';
+import { CodexTrade, UseLatestTradesOptions, ConnectionState, GraphqlTokenEvent } from '@/types';
 
 
 const toTimestampMs = (value?: string | number | null) => {
