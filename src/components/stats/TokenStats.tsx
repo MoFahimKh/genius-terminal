@@ -5,7 +5,7 @@ import { ChevronDown } from 'lucide-react';
 
 import { TokenIcon } from '@/components/common/TokenIcon';
 import { CollapseToggle } from '@/components/common/CollapseToggle';
-import { MockChart } from '@/components/chart/MockChart';
+import { Chart } from '@/components/Chart';
 import { useTokenStats } from '@/hooks/useTokenStats';
 import { formatTokenAmount, formatUsd } from '@/lib/format';
 
@@ -113,7 +113,7 @@ export const TokenStats = () => {
       </div>
 
       <div className="border-default relative min-h-[320px] flex-1 border-t border-white/5">
-        <MockChart />
+        <Chart />
       </div>
     </div>
   );
