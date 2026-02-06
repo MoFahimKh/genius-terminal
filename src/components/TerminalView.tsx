@@ -101,7 +101,7 @@ export const TerminalView = ({ address, networkId }: TerminalViewProps) => {
               style={{ flexShrink: 0 }}
               aria-hidden={isSidebarCollapsed}
             >
-              <div className={isSidebarCollapsed ? "pointer-events-none" : ""}>
+              <div className={`${isSidebarCollapsed ? "pointer-events-none" : ""} h-full`}>
                 <RightSidebar />
               </div>
             </motion.div>

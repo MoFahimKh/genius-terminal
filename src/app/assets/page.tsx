@@ -2,9 +2,9 @@ import { TerminalView } from '@/components/TerminalView';
 import { DEFAULT_CODEX_MARKET } from '@/config/market';
 
 type AssetsPageProps = {
-  searchParams?: {
+  searchParams?: Promise<{
     address?: string;
-  };
+  }>;
 };
 
 const isValidAddress = (value?: string) => {
@@ -12,9 +12,10 @@ const isValidAddress = (value?: string) => {
   return /^0x[a-fA-F0-9]{40}$/.test(value);
 };
 
-export default function AssetsPage({ searchParams }: AssetsPageProps) {
-  const address = isValidAddress(searchParams?.address)
-    ? searchParams?.address
+export default async function AssetsPage({ searchParams }: AssetsPageProps) {
+  const params = (await searchParams) ?? {};
+  const address = isValidAddress(params.address)
+    ? params.address
     : DEFAULT_CODEX_MARKET.address;
 
   return (

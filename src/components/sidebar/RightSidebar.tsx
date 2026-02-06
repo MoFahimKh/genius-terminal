@@ -87,8 +87,8 @@ export const RightSidebar = () => {
   };
 
   return (
-    <aside className="invisible-scroll flex h-full min-h-0 flex-col overflow-y-auto border-l border-white/5">
-      <section className="border border-white/10 border-l-0 px-4 py-2.5">
+    <aside className="invisible-scroll flex h-full min-h-0 flex-col overflow-hidden border-l border-white/5">
+      <section className="shrink-0 border border-white/10 border-l-0 px-4 py-2.5">
         <div className="flex items-start justify-between gap-6">
           <div className="flex min-w-0 flex-1 items-start gap-4">
             {metrics.slice(0, 2).map(
@@ -145,21 +145,21 @@ export const RightSidebar = () => {
         </div>
       </section>
 
-      <div style={{alignItems:"center"}} className="flex flex-1 flex-col overflow-y-auto text-center align-middle ">
+      <div className="flex w-full min-h-0 flex-1 flex-col items-center overflow-y-auto text-center pb-6">
         {!isConnected && (
-          <div className=' border-b-2'>
-            <div  className="flex flex-col items-center ">
+          <div className="w-full border-b border-white/10 pb-6">
+            <div className="flex flex-col items-center">
               <Image
                 src={WELCOME_IMAGE.src}
                 alt="Welcome to Genius Terminal"
                 width={WELCOME_IMAGE.width}
                 height={WELCOME_IMAGE.height}
-                className="w-full"
+                className="w-92 h-auto object-contain"
                 priority
               />
             </div>
 
-            <div className="mt-6 flex flex-col gap-3">
+            <div className="mt-6 flex flex-col items-center gap-3">
               {BUTTONS.map(({ label, icon }) => (
                 <button key={label} className={buttonBaseClasses} type="button" onClick={handleConnect}>
                   <span className="flex h-11 w-11 items-center  justify-center rounded-xs">
@@ -171,11 +171,13 @@ export const RightSidebar = () => {
             </div>
           </div>
         )}
+        <div className="w-full">
           <TokenBanner
             name={data.snapshot?.name ?? null}
             symbol={data.snapshot?.symbol ?? null}
             imageUrl={data.snapshot?.imageUrl ?? null}
           />
+        </div>
       </div>
 
     </aside>
