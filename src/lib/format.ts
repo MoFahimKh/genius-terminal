@@ -92,3 +92,11 @@ export const toNumber = (value?: string | number | null) => {
   const parsed = typeof value === "number" ? value : Number(value);
   return Number.isFinite(parsed) ? parsed : null;
 };
+
+export const formatPriceUsd = (value: number | null) => {
+  if (value === null || Number.isNaN(value)) return '—';
+  if (value >= 1) return formatUsd(value);
+  if (value >= 0.01) return `$${value.toFixed(4)}`;
+  if (value >= 0.0001) return `$${value.toFixed(6)}`;
+  return `$${value.toFixed(8)}`;
+};

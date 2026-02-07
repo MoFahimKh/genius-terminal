@@ -4,7 +4,7 @@ import { ExternalLinkIcon } from 'lucide-react';
 import { useMemo } from 'react';
 
 import { useTokenEvents } from '@/context/TokenEventsContext';
-import { formatTimeAgo, formatTokenAmount, formatUsd, truncateAddress } from '@/lib/format';
+import { formatPriceUsd, formatTimeAgo, formatTokenAmount, formatUsd, truncateAddress } from '@/lib/format';
 
 const blockchainExplorerByNetwork: Record<number, string> = {
   56: 'https://bscscan.com/address/',
@@ -78,7 +78,7 @@ export const LiveTradesTable = () => {
                   <td className={`px-4  font-semibold ${trade.side === 'sell' ? 'text-[#F87272]' : 'text-[#36D399]'}`}>
                     {trade.side === 'sell' ? 'Sell' : 'Buy'}
                   </td>
-                  <td className="px-4 ">{trade.priceUsd ? formatUsd(trade.priceUsd) : '—'}</td>
+                  <td className="px-4 ">{formatPriceUsd(trade.priceUsd)}</td>
                   <td className="px-4 ">{formatTokenAmount(trade.amountToken)}</td>
                   <td className="px-4 ">
                     <div className="relative h-8 overflow-hidden">
