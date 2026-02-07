@@ -112,7 +112,7 @@ export const TerminalView = ({ address, networkId }: TerminalViewProps) => {
       {!isMobile && (
         <div
           className="absolute top-1/2 hidden -translate-y-1/2 md:block"
-          style={{ right: isSidebarCollapsed ? 16 : SIDEBAR_WIDTH - 14 }}
+          style={{ right: isSidebarCollapsed ? 0 : SIDEBAR_WIDTH - 14 }}
         >
           <CollapseToggle.horizontal
             isCollapsed={isSidebarCollapsed}
